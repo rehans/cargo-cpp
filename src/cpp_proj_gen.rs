@@ -37,8 +37,8 @@ const INCLUDE_DIR_NAME: &str = "include";
 #[structopt(name = "cpp-proj-gen", about = "C++ project generator.")]
 pub struct Opt {
     // Project name
-    #[structopt(short, long, default_value = "", help = "e.g. company name")]
-    name_space: String,
+    #[structopt(short, long, help = "e.g. company name")]
+    name_space: Option<String>,
 
     // Target name
     #[structopt(short, long, default_value = "my-target")]
@@ -148,10 +148,14 @@ impl CppProjGen {
     }
 
     fn get_cmake_project_name(&self) -> String {
-        let project_name = if self.opt.name_space.is_empty() {
-            self.opt.target_name.clone()
+        let project_name = if self.opt.name_space.is_none() {
+            String::from(&self.opt.target_name)
         } else {
-            let tmp = format!("{}-{}", &self.opt.name_space, &self.opt.target_name);
+            let tmp = format!(
+                "{}-{}",
+                self.opt.name_space.as_ref().unwrap(),
+                &self.opt.target_name
+            );
             tmp
         };
 
@@ -159,13 +163,24 @@ impl CppProjGen {
     }
 
     fn get_cmake_local_include_dir(&self) -> PathBuf {
-        let local_include_dir: PathBuf = [
-            INCLUDE_DIR_NAME,
-            &self.opt.name_space,
-            &self.opt.target_name,
-        ]
-        .iter()
-        .collect();
+        let local_include_dir: PathBuf = if self.opt.name_space.is_none() {
+            // include/target-name
+            [
+                String::from(INCLUDE_DIR_NAME),
+                String::from(&self.opt.target_name),
+            ]
+            .iter()
+            .collect()
+        } else {
+            // include/name-space/target-name
+            [
+                String::from(INCLUDE_DIR_NAME),
+                String::from(self.opt.name_space.as_ref().unwrap()),
+                String::from(&self.opt.target_name),
+            ]
+            .iter()
+            .collect()
+        };
 
         local_include_dir
     }
