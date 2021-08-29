@@ -4,14 +4,7 @@ use structopt::StructOpt;
 
 //-----------------------------------------------------------------------------
 fn main() -> std::io::Result<()> {
-    let mut opt = cpp_proj_gen::Opt::from_args();
-    if opt.output_dir.as_os_str().is_empty() {
-        opt.output_dir = std::env::current_dir().unwrap();
-        opt.output_dir.push(&opt.project);
-    }
-
-    // Print all options form cli in debug print by using ':?'
-    println!("{:?}", opt);
+    let opt = cpp_proj_gen::Opt::from_args();
 
     cpp_proj_gen::CppProjGen::new(opt)
         .add_include_dir()
