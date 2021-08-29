@@ -16,11 +16,16 @@ use structopt::StructOpt;
 const CMAKELISTS_FILE_STR: &str = "
     cmake_minimum_required(VERSION @CMAKE_VERSION@)
 
-    project(@COMPANY_NAME@-@PROJECT_NAME@)
+    project(@CMAKE_PROJECT_NAME@)
 
-    add_library(@PROJECT_NAME@-lib STATIC
-        # include/@COMPANY_NAME@/@PROJECT_NAME@/@PROJECT_NAME@.h
-        # source/@PROJECT_NAME@.cpp
+    add_library(@CMAKE_TARGET_NAME@ STATIC
+        # include/@INCLUDE_DIR@/@CMAKE_TARGET_NAME@.h
+        # source/@CMAKE_TARGET_NAME@.cpp
+    )
+
+    target_include_directories(@CMAKE_TARGET_NAME@
+        PUBLIC include
+        PRIVATE source
     )
 ";
 
@@ -31,16 +36,16 @@ const INCLUDE_DIR_NAME: &str = "include";
 #[derive(Debug, StructOpt)]
 #[structopt(name = "cpp-proj-gen", about = "C++ project generator.")]
 pub struct Opt {
-    // Company name
-    #[structopt(short, long, default_value = "my-company")]
-    company: String,
-
     // Project name
-    #[structopt(short, long, default_value = "my-project")]
-    project: String,
+    #[structopt(short, long, default_value = "", help = "e.g. company name")]
+    name_space: String,
+
+    // Target name
+    #[structopt(short, long, default_value = "my-target")]
+    target_name: String,
 
     // CMake version
-    #[structopt(short = "m", long = "cmake", default_value = "3.15.0")]
+    #[structopt(short, long, default_value = "3.15.0")]
     cmake_version: String,
 
     // Output directory
@@ -67,9 +72,7 @@ impl CppProjGen {
     }
 
     pub fn add_include_dir(self) -> CppProjGen {
-        let local_include_dir: PathBuf = [INCLUDE_DIR_NAME, &self.opt.company, &self.opt.project]
-            .iter()
-            .collect();
+        let local_include_dir: PathBuf = self.get_cmake_local_include_dir();
 
         self.add_toplevel_dir(local_include_dir)
     }
@@ -108,6 +111,8 @@ impl CppProjGen {
 
         println!("Created: {:?}", &self.cmake_lists_file);
 
+        println!("{}", self.replace_cmake_content_file_variables());
+
         self
     }
 
@@ -122,15 +127,47 @@ impl CppProjGen {
 
     fn create_cmake_lists_file(&self) -> std::io::Result<()> {
         // Replace all variables
-        let cmake_lists_file_content = String::from(CMAKELISTS_FILE_STR)
-            .replace("@PROJECT_NAME@", &self.opt.project)
-            .replace("@COMPANY_NAME@", &self.opt.company)
-            .replace("@CMAKE_VERSION@", &self.opt.cmake_version);
+        let cmake_lists_file_content = self.replace_cmake_content_file_variables();
 
         // Create CMakeLists.txt
         File::create(&self.cmake_lists_file)?.write_all(cmake_lists_file_content.as_bytes())?;
 
         Ok(())
+    }
+
+    fn replace_cmake_content_file_variables(&self) -> String {
+        let local_include_dir = self.get_cmake_local_include_dir();
+        let project_name = self.get_cmake_project_name();
+        let cmake_lists_file_content = String::from(CMAKELISTS_FILE_STR)
+            .replace("@INCLUDE_DIR@", &local_include_dir.display().to_string())
+            .replace("@CMAKE_TARGET_NAME@", &self.opt.target_name)
+            .replace("@CMAKE_PROJECT_NAME@", &project_name)
+            .replace("@CMAKE_VERSION@", &self.opt.cmake_version);
+
+        cmake_lists_file_content
+    }
+
+    fn get_cmake_project_name(&self) -> String {
+        let project_name = if self.opt.name_space.is_empty() {
+            self.opt.target_name.clone()
+        } else {
+            let tmp = format!("{}-{}", &self.opt.name_space, &self.opt.target_name);
+            tmp
+        };
+
+        project_name
+    }
+
+    fn get_cmake_local_include_dir(&self) -> PathBuf {
+        let local_include_dir: PathBuf = [
+            INCLUDE_DIR_NAME,
+            &self.opt.name_space,
+            &self.opt.target_name,
+        ]
+        .iter()
+        .collect();
+
+        local_include_dir
     }
 }
 
@@ -142,7 +179,7 @@ fn make_out_dir(opt: &Opt) -> PathBuf {
         opt.output_dir.clone()
     };
 
-    let tmp_out_dir: PathBuf = [out_dir_parent, PathBuf::from(&opt.project)]
+    let tmp_out_dir: PathBuf = [out_dir_parent, PathBuf::from(&opt.target_name)]
         .iter()
         .collect();
 
