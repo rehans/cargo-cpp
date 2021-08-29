@@ -24,13 +24,14 @@ const CMAKELISTS_FILE_STR: &str = "
     )
 
     target_include_directories(@CMAKE_TARGET_NAME@
-        PUBLIC include
-        PRIVATE source
+        PUBLIC
+            ${CMAKE_CURRENT_LIST_DIR}/include
+        PRIVATE
+            ${CMAKE_CURRENT_LIST_DIR}/source
     )
 ";
 
 const CMAKELISTS_FILENAME: &str = "CMakeLists.txt";
-const INCLUDE_DIR_NAME: &str = "include";
 
 // Options
 #[derive(Debug, StructOpt)]
@@ -164,17 +165,11 @@ impl CppProjGen {
 
     fn get_cmake_local_include_dir(&self) -> PathBuf {
         let local_include_dir: PathBuf = if self.opt.name_space.is_none() {
-            // include/target-name
-            [
-                String::from(INCLUDE_DIR_NAME),
-                String::from(&self.opt.target_name),
-            ]
-            .iter()
-            .collect()
+            // target-name
+            [String::from(&self.opt.target_name)].iter().collect()
         } else {
-            // include/name-space/target-name
+            // name-space/target-name
             [
-                String::from(INCLUDE_DIR_NAME),
                 String::from(self.opt.name_space.as_ref().unwrap()),
                 String::from(&self.opt.target_name),
             ]
