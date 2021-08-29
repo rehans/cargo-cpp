@@ -49,8 +49,8 @@ pub struct Opt {
     cmake_version: String,
 
     // Output directory
-    #[structopt(short, long, parse(from_os_str), default_value = "")]
-    output_dir: PathBuf,
+    #[structopt(short, long, parse(from_os_str))]
+    output_dir: Option<PathBuf>,
 }
 
 // CppProjGen
@@ -187,16 +187,12 @@ impl CppProjGen {
 }
 
 fn make_out_dir(opt: &Opt) -> PathBuf {
-    let is_out_dir_empty = opt.output_dir.as_os_str().is_empty();
-    let out_dir_parent = if is_out_dir_empty {
-        std::env::current_dir().unwrap()
-    } else {
-        opt.output_dir.clone()
+    let parent = match &opt.output_dir {
+        Some(p) => p.clone(),
+        None => PathBuf::from(std::env::current_dir().unwrap().clone()),
     };
 
-    let tmp_out_dir: PathBuf = [out_dir_parent, PathBuf::from(&opt.target_name)]
-        .iter()
-        .collect();
+    let out_dir: PathBuf = [parent, PathBuf::from(&opt.target_name)].iter().collect();
 
-    tmp_out_dir
+    out_dir
 }
