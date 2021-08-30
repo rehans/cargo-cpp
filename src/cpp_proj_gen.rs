@@ -84,7 +84,7 @@ impl CppProjGen {
 
         CppProjGen {
             directories: Vec::new(),
-            cmake_lists_file: PathBuf::from("CMakeLists.txt"),
+            cmake_lists_file: PathBuf::from(CMAKELISTS_FILENAME),
             cmake_vars: vars,
             out_dir: build_out_dir(&opt),
             opt: opt,
@@ -113,16 +113,6 @@ impl CppProjGen {
 
     pub fn add_toplevel_dir(mut self, dir: PathBuf) -> CppProjGen {
         self.directories.push(dir);
-
-        self
-    }
-
-    pub fn add_cmake_lists_file(mut self) -> CppProjGen {
-        let cmake_lists_file_path: PathBuf = [&self.out_dir, &PathBuf::from(CMAKELISTS_FILENAME)]
-            .iter()
-            .collect();
-
-        self.cmake_lists_file = cmake_lists_file_path;
 
         self
     }
