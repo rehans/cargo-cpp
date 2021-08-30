@@ -8,10 +8,9 @@ fn main() -> std::io::Result<()> {
 
     cpp_proj_gen::CppProjGen::new(opt)
         .add_include_dir(PathBuf::from("include"))
-        .add_toplevel_dir(PathBuf::from("source"))
+        .add_source_dir(PathBuf::from("source"))
         .add_toplevel_dir(PathBuf::from("test"))
         .add_cmake_lists_file()
-        .print()
         .create()?;
 
     Ok(())
