@@ -97,7 +97,7 @@ impl CppProjGen {
             String::from(dir.to_str().unwrap()),
         );
 
-        let local_include_dir: PathBuf = self.build_cmake_local_include_dir(dir);
+        let local_include_dir: PathBuf = build_cmake_local_include_dir(&self.opt, dir);
 
         self.add_toplevel_dir(local_include_dir)
     }
@@ -136,24 +136,24 @@ impl CppProjGen {
 
         paths
     }
+}
 
-    fn build_cmake_local_include_dir(&self, dir: PathBuf) -> PathBuf {
-        let result_dir: PathBuf = if self.opt.name_space.is_none() {
-            // e.g. include/target-name
-            [dir, PathBuf::from(&self.opt.target_name)].iter().collect()
-        } else {
-            // e.g. include/name-space/target-name
-            [
-                dir,
-                PathBuf::from(self.opt.name_space.as_ref().unwrap()),
-                PathBuf::from(&self.opt.target_name),
-            ]
-            .iter()
-            .collect()
-        };
+fn build_cmake_local_include_dir(opt: &Opt, dir: PathBuf) -> PathBuf {
+    let result_dir: PathBuf = if opt.name_space.is_none() {
+        // e.g. include/target-name
+        [dir, PathBuf::from(&opt.target_name)].iter().collect()
+    } else {
+        // e.g. include/name-space/target-name
+        [
+            dir,
+            PathBuf::from(opt.name_space.as_ref().unwrap()),
+            PathBuf::from(&opt.target_name),
+        ]
+        .iter()
+        .collect()
+    };
 
-        result_dir
-    }
+    result_dir
 }
 
 fn build_out_dir(opt: &Opt) -> PathBuf {
