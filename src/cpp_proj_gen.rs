@@ -72,8 +72,8 @@ impl CppProjGen {
         }
     }
 
-    pub fn add_include_dir(self) -> CppProjGen {
-        let local_include_dir: PathBuf = self.get_cmake_local_include_dir();
+    pub fn add_include_dir(self, dir: PathBuf) -> CppProjGen {
+        let local_include_dir: PathBuf = [dir, self.get_cmake_local_include_dir()].iter().collect();
 
         self.add_toplevel_dir(local_include_dir)
     }
