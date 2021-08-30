@@ -21,7 +21,7 @@ const CMAKELISTS_FILE_STR: &str = "
 
     target_include_directories(@CMAKE_TARGET_NAME@
         PUBLIC
-            ${CMAKE_CURRENT_LIST_DIR}/include
+            ${CMAKE_CURRENT_LIST_DIR}/@INCLUDE_DIR@
         PRIVATE
             ${CMAKE_CURRENT_LIST_DIR}/@SOURCE_DIR@
     )
