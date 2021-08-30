@@ -9,7 +9,7 @@ use std::{collections::HashMap, fs, path::PathBuf};
 use structopt::StructOpt;
 
 // Constants
-const CMAKELISTS_FILE_STR: &str = "
+const CMAKELISTS_CONTENTS: &str = "
     cmake_minimum_required(VERSION @CMAKE_MINIMUM_VERSION@)
 
     project(@CMAKE_PROJECT_NAME@)
@@ -118,7 +118,7 @@ impl CppProjGen {
     }
 
     pub fn create(&self) -> std::io::Result<()> {
-        let contents = replace_cmake_vars(&self.cmake_vars);
+        let contents = replace_cmake_vars(CMAKELISTS_CONTENTS, &self.cmake_vars);
         let paths = self.build_paths();
         create_all_paths(paths, contents)?;
 
@@ -171,14 +171,14 @@ fn make_absolute_path(out_dir: &PathBuf, dir: &PathBuf) -> PathBuf {
     [out_dir, dir].iter().collect()
 }
 
-fn replace_cmake_vars(cmake_vars: &HashMap<String, String>) -> String {
-    let mut content = String::from(CMAKELISTS_FILE_STR);
+fn replace_cmake_vars(cmake_contents: &str, cmake_vars: &HashMap<String, String>) -> String {
+    let mut result = String::from(cmake_contents);
 
     for (var, value) in cmake_vars {
-        content = content.replace(var, value);
+        result = result.replace(var, value);
     }
 
-    content
+    result
 }
 
 fn build_cmake_project_name(opt: &Opt, delimiter: &str) -> String {
@@ -284,7 +284,7 @@ mod tests {
 
         println!("{:#?}", cpp_proj_gen.cmake_vars);
 
-        let result = replace_cmake_vars(&cpp_proj_gen.cmake_vars);
+        let result = replace_cmake_vars(CMAKELISTS_CONTENTS, &cpp_proj_gen.cmake_vars);
         println!("{}", result);
     }
 
