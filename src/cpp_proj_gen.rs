@@ -50,9 +50,11 @@ pub struct Opt {
     output_dir: Option<PathBuf>,
 }
 
+type PathBufVec = Vec<PathBuf>;
+
 // CppProjGen
 pub struct CppProjGen {
-    directories: Vec<PathBuf>,
+    directories: PathBufVec,
     cmake_lists_file: PathBuf,
     cmake_vars: HashMap<String, String>,
     opt: Opt,
