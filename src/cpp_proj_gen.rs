@@ -63,7 +63,7 @@ pub struct CppProjGen {
 }
 
 impl CppProjGen {
-    pub fn new(opt: Opt) -> CppProjGen {
+    pub fn new(opt: Opt) -> Self {
         let mut vars = HashMap::new();
         vars.insert(
             String::from("@CMAKE_MINIMUM_VERSION@"),
@@ -85,7 +85,7 @@ impl CppProjGen {
             build_cmake_project_name(&opt, "/"),
         );
 
-        CppProjGen {
+        Self {
             directories: Vec::new(),
             cmake_lists_file: PathBuf::from(CMAKELISTS_FILENAME),
             cmake_vars: vars,
@@ -94,7 +94,7 @@ impl CppProjGen {
         }
     }
 
-    pub fn add_include_dir(mut self, dir: PathBuf) -> CppProjGen {
+    pub fn add_include_dir(mut self, dir: PathBuf) -> Self {
         self.cmake_vars.insert(
             String::from("@INCLUDE_DIR@"),
             String::from(dir.to_str().unwrap()),
@@ -105,7 +105,7 @@ impl CppProjGen {
         self.add_toplevel_dir(local_include_dir)
     }
 
-    pub fn add_source_dir(mut self, dir: PathBuf) -> CppProjGen {
+    pub fn add_source_dir(mut self, dir: PathBuf) -> Self {
         self.cmake_vars.insert(
             String::from("@SOURCE_DIR@"),
             String::from(dir.to_str().unwrap()),
@@ -114,7 +114,7 @@ impl CppProjGen {
         self.add_toplevel_dir(dir)
     }
 
-    pub fn add_toplevel_dir(mut self, dir: PathBuf) -> CppProjGen {
+    pub fn add_toplevel_dir(mut self, dir: PathBuf) -> Self {
         self.directories.push(dir);
 
         self
