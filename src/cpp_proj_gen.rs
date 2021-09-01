@@ -123,7 +123,7 @@ impl CppProjGen {
         self
     }
 
-    pub fn create(&self) -> std::io::Result<()> {
+    pub fn run(&self) -> std::io::Result<()> {
         let contents = replace_cmake_vars(CMAKELISTS_CONTENTS, &self.cmake_vars);
         let paths = self.build_paths();
         create_all_paths(paths, contents)?;
