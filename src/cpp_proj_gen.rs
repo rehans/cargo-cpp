@@ -2,6 +2,7 @@
 For 'unwrap' /sa https://doc.rust-lang.org/rust-by-example/error/option_unwrap.html
 For 'iter' and 'collect' /sa  https://doc.rust-lang.org/std/path/struct.PathBuf.html#examples
 For '?' /sa https://doc.rust-lang.org/book/ch09-02-recoverable-errors-with-result.html#a-shortcut-for-propagating-errors-the--operator
+For HashMap /sa https://doc.rust-lang.org/std/collections/struct.HashMap.html
 */
 
 use std::{collections::HashMap, fs, path::PathBuf};
@@ -51,39 +52,41 @@ pub struct Opt {
 }
 
 type PathBufVec = Vec<PathBuf>;
-type CmakeVarValues = HashMap<String, String>;
+type CmakeVarsMap = HashMap<String, String>;
 
 // CppProjGen
+#[derive(Debug)]
 pub struct CppProjGen {
     directories: PathBufVec,
     cmake_lists_file: PathBuf,
-    cmake_vars: CmakeVarValues,
+    cmake_vars: CmakeVarsMap,
     opt: Opt,
     out_dir: PathBuf,
 }
 
 impl CppProjGen {
     pub fn new(opt: Opt) -> Self {
-        let mut vars = HashMap::new();
-        vars.insert(
-            String::from("@CMAKE_MINIMUM_VERSION@"),
-            String::from(&opt.cmake_version),
-        );
-
-        vars.insert(
-            String::from("@CMAKE_TARGET_NAME@"),
-            String::from(&opt.target_name),
-        );
-
-        vars.insert(
-            String::from("@CMAKE_PROJECT_NAME@"),
-            build_cmake_project_name(&opt, "-"),
-        );
-
-        vars.insert(
-            String::from("@INCLUDE_DOMAIN_DIR@"),
-            build_cmake_project_name(&opt, "/"),
-        );
+        let vars: HashMap<String, String> = [
+            (
+                String::from("@CMAKE_MINIMUM_VERSION@"),
+                String::from(&opt.cmake_version),
+            ),
+            (
+                String::from("@CMAKE_TARGET_NAME@"),
+                String::from(&opt.target_name),
+            ),
+            (
+                String::from("@CMAKE_PROJECT_NAME@"),
+                build_cmake_project_name(&opt, "-"),
+            ),
+            (
+                String::from("@INCLUDE_DOMAIN_DIR@"),
+                build_cmake_project_name(&opt, "/"),
+            ),
+        ]
+        .iter()
+        .cloned()
+        .collect();
 
         Self {
             directories: Vec::new(),
