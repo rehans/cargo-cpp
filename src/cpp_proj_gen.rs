@@ -123,10 +123,10 @@ impl CppProjGen {
         self
     }
 
-    pub fn gen(&self) -> std::io::Result<()> {
+    pub fn gen(&self, progress: Option<fn(String)>) -> std::io::Result<()> {
         let contents = replace_cmake_vars(CMAKELISTS_CONTENTS, &self.cmake_vars);
         let paths = self.build_paths();
-        create_all_paths(paths, contents)?;
+        create_all_paths(paths, contents, progress)?;
 
         Ok(())
     }
@@ -203,8 +203,15 @@ fn build_cmake_project_name(opt: &Opt, delimiter: &str) -> String {
     project_name
 }
 
-fn create_all_paths(paths: Vec<PathBuf>, contents: String) -> std::io::Result<()> {
+fn create_all_paths(
+    paths: Vec<PathBuf>,
+    contents: String,
+    progress: Option<fn(String)>,
+) -> std::io::Result<()> {
     for path in paths {
+        if progress.is_some() {
+            progress.unwrap()(path.to_str().unwrap().to_string());
+        }
         // TODO: How to distinguish between file and dir?
         if path.ends_with("CMakeLists.txt") {
             fs::write(path, &contents)?;
