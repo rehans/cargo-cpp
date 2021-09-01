@@ -10,7 +10,7 @@ fn main() -> std::io::Result<()> {
         .add_include_dir(PathBuf::from("include"))
         .add_source_dir(PathBuf::from("source"))
         .add_toplevel_dir(PathBuf::from("test"))
-        .run()?;
+        .gen()?;
 
     Ok(())
 }
