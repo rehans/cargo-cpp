@@ -5,9 +5,11 @@ For '?' /sa https://doc.rust-lang.org/book/ch09-02-recoverable-errors-with-resul
 For HashMap /sa https://doc.rust-lang.org/std/collections/struct.HashMap.html
 */
 
-use crate::file_templates;
 use std::{collections::HashMap, fs, path::PathBuf};
 use structopt::StructOpt;
+
+const CMLT_FILE_NAME: &str = "CMakeLists.txt";
+const CMLT: &str = include_str!("../res/CMakeLists.txt.in");
 
 // Options
 #[derive(Debug, StructOpt)]
@@ -69,7 +71,7 @@ impl CppProjGen {
 
         Self {
             directories: Vec::new(),
-            cmake_lists_file: PathBuf::from(file_templates::CMAKELISTS_TXT_NAME),
+            cmake_lists_file: PathBuf::from(CMLT_FILE_NAME),
             cmake_vars: vars,
             out_dir: build_out_dir(&opt),
             opt: opt,
@@ -103,8 +105,7 @@ impl CppProjGen {
     }
 
     pub fn gen(&self, progress: Option<fn(String)>) -> std::io::Result<()> {
-        let contents =
-            replace_cmake_vars(file_templates::CMAKELISTS_TXT_CONTENTS, &self.cmake_vars);
+        let contents = replace_cmake_vars(CMLT, &self.cmake_vars);
         let paths = self.build_paths();
         create_all_paths(paths, contents, progress)?;
 
@@ -193,7 +194,7 @@ fn create_all_paths(
             progress.unwrap()(path.to_str().unwrap().to_string());
         }
         // TODO: How to distinguish between file and dir?
-        if path.ends_with("CMakeLists.txt") {
+        if path.ends_with(CMLT_FILE_NAME) {
             fs::write(path, &contents)?;
         } else {
             fs::create_dir_all(path)?;
@@ -277,10 +278,7 @@ mod tests {
 
         println!("{:#?}", cpp_proj_gen.cmake_vars);
 
-        let result = replace_cmake_vars(
-            file_templates::CMAKELISTS_TXT_NAME,
-            &cpp_proj_gen.cmake_vars,
-        );
+        let result = replace_cmake_vars(CMLT, &cpp_proj_gen.cmake_vars);
         println!("{}", result);
     }
 

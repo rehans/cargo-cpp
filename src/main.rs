@@ -1,5 +1,4 @@
 mod cpp_proj_gen;
-mod file_templates;
 use std::path::PathBuf;
 use structopt::StructOpt;
 
