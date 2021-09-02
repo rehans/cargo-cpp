@@ -5,30 +5,9 @@ For '?' /sa https://doc.rust-lang.org/book/ch09-02-recoverable-errors-with-resul
 For HashMap /sa https://doc.rust-lang.org/std/collections/struct.HashMap.html
 */
 
+use crate::file_templates;
 use std::{collections::HashMap, fs, path::PathBuf};
-
 use structopt::StructOpt;
-
-// Constants
-const CMAKELISTS_CONTENTS: &str = "
-    cmake_minimum_required(VERSION @CMAKE_MINIMUM_VERSION@)
-
-    project(@CMAKE_PROJECT_NAME@)
-
-    add_library(@CMAKE_TARGET_NAME@ STATIC
-        # @INCLUDE_DIR@/@INCLUDE_DOMAIN_DIR@/@CMAKE_TARGET_NAME@.h
-        # @SOURCE_DIR@/@CMAKE_TARGET_NAME@.cpp
-    )
-
-    target_include_directories(@CMAKE_TARGET_NAME@
-        PUBLIC
-            ${CMAKE_CURRENT_LIST_DIR}/@INCLUDE_DIR@
-        PRIVATE
-            ${CMAKE_CURRENT_LIST_DIR}/@SOURCE_DIR@
-    )
-";
-
-const CMAKELISTS_FILENAME: &str = "CMakeLists.txt";
 
 // Options
 #[derive(Debug, StructOpt)]
@@ -90,7 +69,7 @@ impl CppProjGen {
 
         Self {
             directories: Vec::new(),
-            cmake_lists_file: PathBuf::from(CMAKELISTS_FILENAME),
+            cmake_lists_file: PathBuf::from(file_templates::CMAKELISTS_TXT_NAME),
             cmake_vars: vars,
             out_dir: build_out_dir(&opt),
             opt: opt,
@@ -124,7 +103,8 @@ impl CppProjGen {
     }
 
     pub fn gen(&self, progress: Option<fn(String)>) -> std::io::Result<()> {
-        let contents = replace_cmake_vars(CMAKELISTS_CONTENTS, &self.cmake_vars);
+        let contents =
+            replace_cmake_vars(file_templates::CMAKELISTS_TXT_CONTENTS, &self.cmake_vars);
         let paths = self.build_paths();
         create_all_paths(paths, contents, progress)?;
 
@@ -297,7 +277,10 @@ mod tests {
 
         println!("{:#?}", cpp_proj_gen.cmake_vars);
 
-        let result = replace_cmake_vars(CMAKELISTS_CONTENTS, &cpp_proj_gen.cmake_vars);
+        let result = replace_cmake_vars(
+            file_templates::CMAKELISTS_TXT_NAME,
+            &cpp_proj_gen.cmake_vars,
+        );
         println!("{}", result);
     }
 
