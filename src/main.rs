@@ -3,7 +3,6 @@ mod file_templates;
 use std::path::PathBuf;
 use structopt::StructOpt;
 
-//-----------------------------------------------------------------------------
 fn main() -> std::io::Result<()> {
     let opt = cpp_proj_gen::Opt::from_args();
 
