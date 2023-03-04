@@ -5,7 +5,7 @@ use std::path::PathBuf;
 fn main() -> std::io::Result<()> {
     let opt = cpp_proj_gen::Args::parse();
 
-    let progress = |text: String| println!("Created: {}", text);
+    let progress = |text: String| println!("Created: {text}");
 
     cpp_proj_gen::CppProjGen::new(opt)
         .add_include_dir(PathBuf::from("include"))
