@@ -5,30 +5,30 @@ For '?' /sa https://doc.rust-lang.org/book/ch09-02-recoverable-errors-with-resul
 For HashMap /sa https://doc.rust-lang.org/std/collections/struct.HashMap.html
 */
 
+use clap::Parser;
 use std::{collections::HashMap, fs, path::PathBuf};
-use structopt::StructOpt;
 
 const CMLT_FILE_NAME: &str = "CMakeLists.txt";
 const CMLT: &str = include_str!("../res/CMakeLists.txt.in");
 
 // Options
-#[derive(Debug, StructOpt)]
-#[structopt(name = "cpp-proj-gen", about = "C++ project generator.")]
-pub struct Opt {
+#[derive(Parser, Debug)]
+#[command(author, version, about = "C++ project generator.")]
+pub struct Args {
     // Project name
-    #[structopt(short, long, help = "e.g. company name")]
+    #[arg(short, long, help = "e.g. company name")]
     name_space: Option<String>,
 
     // Target name
-    #[structopt(short, long, default_value = "my-target")]
+    #[arg(short, long, default_value = "my-target")]
     target_name: String,
 
     // CMake version
-    #[structopt(short, long, default_value = "3.15.0")]
+    #[arg(short, long, default_value = "3.15.0")]
     cmake_version: String,
 
     // Output directory
-    #[structopt(short, long, parse(from_os_str))]
+    #[arg(short, long)]
     output_dir: Option<PathBuf>,
 }
 
@@ -41,12 +41,12 @@ pub struct CppProjGen {
     directories: PathBufVec,
     cmake_lists_file: PathBuf,
     cmake_vars: CmakeVarsMap,
-    opt: Opt,
+    opt: Args,
     out_dir: PathBuf,
 }
 
 impl CppProjGen {
-    pub fn new(opt: Opt) -> Self {
+    pub fn new(opt: Args) -> Self {
         let vars: HashMap<String, String> = [
             (
                 String::from("@CMAKE_MINIMUM_VERSION@"),
@@ -125,7 +125,7 @@ impl CppProjGen {
     }
 }
 
-fn build_cmake_local_include_dir(opt: &Opt, dir: PathBuf) -> PathBuf {
+fn build_cmake_local_include_dir(opt: &Args, dir: PathBuf) -> PathBuf {
     let result_dir: PathBuf = if opt.name_space.is_none() {
         // e.g. include/target-name
         [dir, PathBuf::from(&opt.target_name)].iter().collect()
@@ -143,7 +143,7 @@ fn build_cmake_local_include_dir(opt: &Opt, dir: PathBuf) -> PathBuf {
     result_dir
 }
 
-fn build_out_dir(opt: &Opt) -> PathBuf {
+fn build_out_dir(opt: &Args) -> PathBuf {
     let parent = match &opt.output_dir {
         Some(p) => p.clone(),
         None => PathBuf::from(std::env::current_dir().unwrap().clone()),
@@ -168,7 +168,7 @@ fn replace_cmake_vars(cmake_contents: &str, cmake_vars: &HashMap<String, String>
     result
 }
 
-fn build_cmake_project_name(opt: &Opt, delimiter: &str) -> String {
+fn build_cmake_project_name(opt: &Args, delimiter: &str) -> String {
     let project_name = if opt.name_space.is_none() {
         String::from(&opt.target_name)
     } else {
@@ -209,8 +209,8 @@ fn create_all_paths(
 mod tests {
     use super::*;
 
-    fn create_test_opt() -> Opt {
-        let opt = Opt {
+    fn create_test_opt() -> Args {
+        let opt = Args {
             name_space: Some(String::from("nmspc")),
             target_name: String::from("tgtnm"),
             cmake_version: String::from("1.23.4"),
@@ -284,7 +284,7 @@ mod tests {
 
     #[test]
     fn test_include_dir_without_namespace() {
-        let opt = Opt {
+        let opt = Args {
             name_space: None,
             target_name: String::from("tgtnm"),
             cmake_version: String::from("1.23.4"),

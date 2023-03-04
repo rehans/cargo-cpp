@@ -1,9 +1,9 @@
 mod cpp_proj_gen;
+use clap::Parser;
 use std::path::PathBuf;
-use structopt::StructOpt;
 
 fn main() -> std::io::Result<()> {
-    let opt = cpp_proj_gen::Opt::from_args();
+    let opt = cpp_proj_gen::Args::parse();
 
     let progress = |text: String| println!("Created: {}", text);
 
