@@ -1,1 +1,3 @@
+// Copyright 2023
+
 static const char *kHelloWorld = "Hello World";

@@ -1,9 +1,8 @@
-// Your First C++ Program
+// Copyright 2023
 
 #include "@HEADER_INCLUDE@"
 
-int main()
+void print()
 {
-    std::cout << "Hello World!";
-    return 0;
+    std::cout << kHelloWorld;
 }

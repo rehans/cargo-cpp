@@ -1,3 +1,5 @@
+use crate::project_gen::cmake_file_gen;
+
 use super::cpp_file_gen::FileGen;
 use super::directory_gen::{DirName, DirectoryGen};
 use std::path::PathBuf;
@@ -12,7 +14,7 @@ pub enum DirPath {
 }
 
 pub fn gen_project(domain_name: String, target_name: String, out_dir: PathBuf) {
-    let dirs = DirectoryGen::new()
+    let dir_gen = DirectoryGen::new()
         .add_toplevel_dir(&DirName::Include {
             name: "include".to_string(),
         })
@@ -27,8 +29,9 @@ pub fn gen_project(domain_name: String, target_name: String, out_dir: PathBuf) {
         })
         .set_domain_name(&domain_name)
         .set_target_name(&target_name)
-        .set_out_dir(&out_dir)
-        .create_dirs();
+        .set_out_dir(&out_dir);
+
+    let dirs = dir_gen.create_dirs();
 
     println!("{:#?}", dirs);
 
@@ -39,4 +42,13 @@ pub fn gen_project(domain_name: String, target_name: String, out_dir: PathBuf) {
         .create_files();
 
     println!("{:#?}", files);
+
+    let cmake_file = cmake_file_gen::FileGen::new()
+        .set_out_dir(&out_dir)
+        .set_domain_name(&domain_name)
+        .set_target_name(&target_name)
+        .set_dir_names(&dir_gen.toplevel_dir_names())
+        .create_file();
+
+    println!("{:#?}", cmake_file);
 }

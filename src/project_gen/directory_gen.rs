@@ -37,6 +37,10 @@ impl DirectoryGen {
         self
     }
 
+    pub fn toplevel_dir_names(&self) -> Vec<DirName> {
+        self.toplevel_dir_names.clone()
+    }
+
     pub fn set_target_name(mut self, name: &String) -> Self {
         self.target_name = name.clone();
         self
@@ -89,7 +93,7 @@ impl DirectoryGen {
         out_paths
     }
 
-    pub fn create_dirs(self) -> Vec<DirPath> {
+    pub fn create_dirs(&self) -> Vec<DirPath> {
         let dirs = self.create_dirs_dry();
 
         for dir in dirs.iter() {
