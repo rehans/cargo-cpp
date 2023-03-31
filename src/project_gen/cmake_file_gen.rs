@@ -132,19 +132,20 @@ mod tests {
 
     #[test]
     fn test() {
-        let mut dir_names = Vec::new();
-        dir_names.push(DirName::Include {
-            name: "include".to_string(),
-        });
-        dir_names.push(DirName::Source {
-            name: "source".to_string(),
-        });
-        dir_names.push(DirName::External {
-            name: "external".to_string(),
-        });
-        dir_names.push(DirName::External {
-            name: "test".to_string(),
-        });
+        let dir_names = vec![
+            DirName::Include {
+                name: "include".to_string(),
+            },
+            DirName::Source {
+                name: "source".to_string(),
+            },
+            DirName::External {
+                name: "external".to_string(),
+            },
+            DirName::External {
+                name: "test".to_string(),
+            },
+        ];
 
         let file_gen = FileGen::new()
             .set_out_dir(&PathBuf::from("/c/"))
