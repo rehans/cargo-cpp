@@ -138,6 +138,6 @@ mod tests {
             .set_target_name(&"target_name".to_string())
             .create_dirs_dry();
 
-        println!("{:#?}", &out_paths);
+        println!("{out_paths:#?}");
     }
 }

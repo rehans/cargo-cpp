@@ -13,7 +13,12 @@ pub enum DirPath {
     External { path: PathBuf },
 }
 
-pub fn gen_project(domain_name: String, target_name: String, out_dir: PathBuf) {
+pub fn gen_project(
+    domain_name: String,
+    target_name: String,
+    out_dir: PathBuf,
+    verbose: Option<bool>,
+) {
     let dir_gen = DirectoryGen::new()
         .add_toplevel_dir(&DirName::Include {
             name: "include".to_string(),
@@ -33,15 +38,11 @@ pub fn gen_project(domain_name: String, target_name: String, out_dir: PathBuf) {
 
     let dirs = dir_gen.create_dirs();
 
-    println!("{:#?}", dirs);
-
     let files = FileGen::new()
         .set_dirs(&dirs)
         .set_domain_name(&domain_name)
         .set_target_name(&target_name)
         .create_files();
-
-    println!("{:#?}", files);
 
     let cmake_file = cmake_file_gen::FileGen::new()
         .set_out_dir(&out_dir)
@@ -50,5 +51,9 @@ pub fn gen_project(domain_name: String, target_name: String, out_dir: PathBuf) {
         .set_dir_names(&dir_gen.toplevel_dir_names())
         .create_file();
 
-    println!("{:#?}", cmake_file);
+    if let Some(true) = verbose {
+        println!("{dirs:#?}");
+        println!("{files:#?}");
+        println!("{cmake_file:#?}");
+    }
 }

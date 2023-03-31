@@ -128,6 +128,6 @@ mod tests {
             .set_domain_name(&"hao".to_string())
             .set_target_name(&"hello_world".to_string())
             .create_files_dry();
-        println!("{:#?}", file_gen);
+        println!("{file_gen:#?}");
     }
 }

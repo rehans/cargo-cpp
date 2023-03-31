@@ -153,6 +153,6 @@ mod tests {
             .set_target_name(&"my_target".to_string())
             .create_file_dry();
 
-        println!("{:#?}", file_gen);
+        println!("{file_gen:#?}");
     }
 }
