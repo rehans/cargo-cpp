@@ -57,7 +57,7 @@ impl FileGen {
         return File::Root { path, content };
     }
 
-    fn create_var_replacements(&self) -> HashMap<String, String> {
+    fn create_var_replacements(&self) -> HashMap<&str, String> {
         // @CMAKE_MINIMUM_VERSION@
         // @PROJECT_NAME@
         // @TARGET_NAME@
@@ -66,35 +66,35 @@ impl FileGen {
         // @SOURCE_DIR@
 
         let mut vars = HashMap::from([
-            ("@CMAKE_MINIMUM_VERSION@".to_string(), "3.19.0".to_string()),
+            ("@CMAKE_MINIMUM_VERSION@", "3.19.0".to_string()),
             (
-                "@PROJECT_NAME@".to_string(),
+                "@PROJECT_NAME@",
                 format!("{}-{}", self.domain_name, self.target_name),
             ),
-            ("@TARGET_NAME@".to_string(), self.target_name.clone()),
+            ("@TARGET_NAME@", self.target_name.clone()),
         ]);
 
         for el in self.top_level_dir_names.iter() {
             match el {
                 DirName::Include { name } => {
-                    vars.insert("@INCLUDE_DIR@".to_string(), name.clone());
+                    vars.insert("@INCLUDE_DIR@", name.clone());
 
                     let mut header_include_dir = PathBuf::from(name);
                     header_include_dir.push(&self.domain_name);
                     header_include_dir.push(&self.target_name);
                     vars.insert(
-                        "@HEADER_INCLUDE_DIR@".to_string(),
+                        "@HEADER_INCLUDE_DIR@",
                         header_include_dir.display().to_string(),
                     );
                 }
                 DirName::Source { name } => {
-                    vars.insert("@SOURCE_DIR@".to_string(), name.clone());
+                    vars.insert("@SOURCE_DIR@", name.clone());
                 }
                 DirName::Test { name } => {
-                    vars.insert("@TEST_DIR@".to_string(), name.clone());
+                    vars.insert("@TEST_DIR@", name.clone());
                 }
                 DirName::External { name } => {
-                    vars.insert("@EXTERNAL_DIR@".to_string(), name.clone());
+                    vars.insert("@EXTERNAL_DIR@", name.clone());
                 }
             }
         }
