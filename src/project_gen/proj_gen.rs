@@ -2,16 +2,16 @@ use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, fs, path::PathBuf};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct File {
+pub struct ProjFile {
     name: String,
     template: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct Folder {
+pub struct ProjFolder {
     name: String,
-    folders: Option<Vec<Folder>>,
-    files: Option<Vec<File>>,
+    folders: Option<Vec<ProjFolder>>,
+    files: Option<Vec<ProjFile>>,
 }
 
 #[derive(Debug, Clone)]
@@ -48,14 +48,14 @@ impl ProjGen {
         string
     }
 
-    fn gen_folder_struct(&self) -> Folder {
+    fn gen_folder_struct(&self) -> ProjFolder {
         let mut json_string = include_str!("res/folder_struct.json").to_string();
         json_string = self.replace_vars(json_string);
 
         serde_json::from_str(&json_string).unwrap()
     }
 
-    fn create_folder(&self, out_dir: &PathBuf, folder: &Folder) -> PathBuf {
+    fn create_folder(&self, out_dir: &PathBuf, folder: &ProjFolder) -> PathBuf {
         let mut folder_path = out_dir.clone();
         folder_path.push(&folder.name);
 
@@ -63,7 +63,7 @@ impl ProjGen {
         folder_path
     }
 
-    fn create_folder_struct(&self, out_dir: &PathBuf, folder: &Folder) {
+    fn create_folder_struct(&self, out_dir: &PathBuf, folder: &ProjFolder) {
         let folder_path = self.create_folder(out_dir, folder);
 
         if let Some(folders) = &folder.folders {
