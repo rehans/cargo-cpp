@@ -3,9 +3,7 @@
 #include "@DOMAIN_NAME@/@TARGET_NAME@/@TARGET_NAME@.h"
 #include <iostream>
 
-static const char *kHelloWorld = "Hello World";
-
 void print()
 {
-    std::cout << kHelloWorld;
+    std::cout << "Hello, world!";
 }
