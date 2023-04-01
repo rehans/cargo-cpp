@@ -39,7 +39,13 @@
             ]
         },
         {
-            "name": "external"
+            "name": "external",
+            "files": [
+                {
+                    "name": "CMakeLists.txt",
+                    "template": "external/CMakeLists.txt.in"
+                }
+            ]
         }
     ]
 }
