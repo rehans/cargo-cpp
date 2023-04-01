@@ -10,14 +10,26 @@ Results in a project folder structure like this:
 my-project
 ├── CMakeLists.txt
 ├── external
+│   └── CMakeLists.txt
 ├── include
 │   └── my-company
 │       └── my-project
 │           └── my-project.h
 ├── README.md
 ├── source
+│   ├── main.cpp
 │   └── my-project.cpp
 └── test
+```
+
+Afterwards build and execute the project:
+```shell
+cd my-project
+mkdir build
+cd build
+cmake ..
+cmake --build .
+./my-project-app
 ```
 
 Use ```./cargo-cpp --help``` for more help.
