@@ -3,11 +3,11 @@
     "files": [
         {
             "name": "CMakeLists.txt",
-            "template": "res/CMakeLists.txt.in"
+            "template": "CMakeLists.txt.in"
         },
         {
             "name": "README.md",
-            "template": "res/README.md.in"
+            "template": "README.md.in"
         }
     ],
     "folders": [
@@ -16,7 +16,7 @@
             "files": [
                 {
                     "name": "@TARGET_NAME@.h",
-                    "template": "res/include/header.h.in"
+                    "template": "include/header.h.in"
                 }
             ]
         },
@@ -25,7 +25,7 @@
             "files": [
                 {
                     "name": "@TARGET_NAME@.cpp",
-                    "template": "res/source/source.cpp.in"
+                    "template": "source/source.cpp.in"
                 }
             ]
         },

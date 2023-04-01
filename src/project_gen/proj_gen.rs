@@ -25,19 +25,19 @@ impl ProjGen {
     pub fn new(domain_name: String, target_name: String, out_dir: Option<PathBuf>) -> Self {
         let templates = HashMap::from([
             (
-                "res/include/header.h.in".to_string(),
+                "include/header.h.in".to_string(),
                 include_str!("res/include/header.h.in").to_string(),
             ),
             (
-                "res/source/source.cpp.in".to_string(),
+                "source/source.cpp.in".to_string(),
                 include_str!("res/source/source.cpp.in").to_string(),
             ),
             (
-                "res/CMakeLists.txt.in".to_string(),
+                "CMakeLists.txt.in".to_string(),
                 include_str!("res/CMakeLists.txt.in").to_string(),
             ),
             (
-                "res/README.md.in".to_string(),
+                "README.md.in".to_string(),
                 include_str!("res/README.md.in").to_string(),
             ),
         ]);
