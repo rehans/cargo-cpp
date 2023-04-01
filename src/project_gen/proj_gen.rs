@@ -23,40 +23,9 @@ pub struct ProjGen {
 
 impl ProjGen {
     pub fn new(domain_name: String, target_name: String, out_dir: Option<PathBuf>) -> Self {
-        let templates = HashMap::from([
-            (
-                "include/header.h.in".to_string(),
-                include_str!("res/include/header.h.in").to_string(),
-            ),
-            (
-                "source/source.cpp.in".to_string(),
-                include_str!("res/source/source.cpp.in").to_string(),
-            ),
-            (
-                "CMakeLists.txt.in".to_string(),
-                include_str!("res/CMakeLists.txt.in").to_string(),
-            ),
-            (
-                "README.md.in".to_string(),
-                include_str!("res/README.md.in").to_string(),
-            ),
-            (
-                "external/CMakeLists.txt.in".to_string(),
-                include_str!("res/external/CMakeLists.txt.in").to_string(),
-            ),
-        ]);
-
-        let project_name = format!("{domain_name}-{target_name}");
-        let vars = HashMap::from([
-            ("@DOMAIN_NAME@".to_string(), domain_name.clone()),
-            ("@TARGET_NAME@".to_string(), target_name.clone()),
-            ("@PROJECT_NAME@".to_string(), project_name.clone()),
-            ("@CMAKE_MINIMUM_VERSION@".to_string(), "3.19.0".to_string()),
-        ]);
-
         Self {
-            vars,
-            templates,
+            vars: Self::create_vars(&domain_name, &target_name),
+            templates: Self::create_templates(),
             out_dir,
         }
     }
@@ -117,6 +86,45 @@ impl ProjGen {
                 }
             }
         };
+    }
+
+    fn create_vars(domain_name: &String, target_name: &String) -> HashMap<String, String> {
+        let project_name = format!("{domain_name}-{target_name}");
+        let vars = HashMap::from([
+            ("@DOMAIN_NAME@".to_string(), domain_name.clone()),
+            ("@TARGET_NAME@".to_string(), target_name.clone()),
+            ("@PROJECT_NAME@".to_string(), project_name.clone()),
+            ("@CMAKE_MINIMUM_VERSION@".to_string(), "3.19.0".to_string()),
+        ]);
+
+        vars
+    }
+
+    fn create_templates() -> HashMap<String, String> {
+        let templates = HashMap::from([
+            (
+                "include/header.h.in".to_string(),
+                include_str!("res/include/header.h.in").to_string(),
+            ),
+            (
+                "source/source.cpp.in".to_string(),
+                include_str!("res/source/source.cpp.in").to_string(),
+            ),
+            (
+                "CMakeLists.txt.in".to_string(),
+                include_str!("res/CMakeLists.txt.in").to_string(),
+            ),
+            (
+                "README.md.in".to_string(),
+                include_str!("res/README.md.in").to_string(),
+            ),
+            (
+                "external/CMakeLists.txt.in".to_string(),
+                include_str!("res/external/CMakeLists.txt.in").to_string(),
+            ),
+        ]);
+
+        templates
     }
 }
 
