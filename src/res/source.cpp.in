@@ -1,8 +1,0 @@
-// Copyright 2023
-
-#include "@HEADER_INCLUDE@"
-
-void print()
-{
-    std::cout << kHelloWorld;
-}
