@@ -1,0 +1,14 @@
+# my-company my-project
+
+## Motivation
+
+Be excellent and help others to understand the purpose of this project.
+
+## Clone and Build
+
+```sh
+git clone ...
+mkdir ...
+cd ..
+cmake ../
+```
