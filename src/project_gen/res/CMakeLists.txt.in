@@ -2,16 +2,20 @@ cmake_minimum_required(VERSION @CMAKE_MINIMUM_VERSION@)
 
 project(@PROJECT_NAME@)
 
-add_subdirectory(@EXTERNAL_DIR@)
+add_subdirectory(external)
 
 add_library(@TARGET_NAME@ STATIC
-    @HEADER_INCLUDE_DIR@/@TARGET_NAME@.h
-    @SOURCE_DIR@/@TARGET_NAME@.cpp
+    include/@DOMAIN_NAME@/@TARGET_NAME@/@TARGET_NAME@.h
+    source/@TARGET_NAME@.cpp
 )
 
 target_include_directories(@TARGET_NAME@
     PUBLIC
-        @INCLUDE_DIR@
+        include
     PRIVATE
-        @SOURCE_DIR@
+        source
+)
+
+target_compile_features(@TARGET_NAME@ 
+    PRIVATE cxx_std_17
 )

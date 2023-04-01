@@ -1,0 +1,41 @@
+{
+    "name": "@TARGET_NAME@",
+    "files": [
+        {
+            "name": "CMakeLists.txt",
+            "content": "@CMAKE_CURRENT_SOURCE_DIR@"
+        }
+    ],
+    "folders": [
+        {
+            "name": "include/@DOMAIN_NAME@/@TARGET_NAME@",
+            "files": [
+                {
+                    "name": "@TARGET_NAME@.h",
+                    "content": "<content>"
+                }
+            ]
+        },
+        {
+            "name": "source",
+            "files": [
+                {
+                    "name": "@TARGET_NAME@.cpp",
+                    "content": "<content>"
+                }
+            ]
+        },
+        {
+            "name": "test",
+            "files": [
+                {
+                    "name": "@TARGET_NAME@_test.cpp",
+                    "content": "<content>"
+                }
+            ]
+        },
+        {
+            "name": "external"
+        }
+    ]
+}
