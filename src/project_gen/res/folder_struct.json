@@ -16,7 +16,7 @@
             "files": [
                 {
                     "name": "@TARGET_NAME@.h",
-                    "template": "include/header.h.in"
+                    "template": "include/print.h.in"
                 }
             ]
         },
@@ -25,7 +25,11 @@
             "files": [
                 {
                     "name": "@TARGET_NAME@.cpp",
-                    "template": "source/source.cpp.in"
+                    "template": "source/print_hello_world.cpp.in"
+                },
+                {
+                    "name": "main.cpp",
+                    "template": "source/main.cpp.in"
                 }
             ]
         },

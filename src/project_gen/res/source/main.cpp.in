@@ -1,0 +1,9 @@
+// Copyright 2023
+
+#include "@DOMAIN_NAME@/@TARGET_NAME@/@TARGET_NAME@.h"
+
+int main()
+{
+    print();
+    return 0;
+}

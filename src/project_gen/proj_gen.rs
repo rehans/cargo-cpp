@@ -101,12 +101,12 @@ impl ProjGen {
     fn create_templates() -> HashMap<String, String> {
         HashMap::from([
             (
-                "include/header.h.in".to_string(),
-                include_str!("res/include/header.h.in").to_string(),
+                "include/print.h.in".to_string(),
+                include_str!("res/include/print.h.in").to_string(),
             ),
             (
-                "source/source.cpp.in".to_string(),
-                include_str!("res/source/source.cpp.in").to_string(),
+                "source/print_hello_world.cpp.in".to_string(),
+                include_str!("res/source/print_hello_world.cpp.in").to_string(),
             ),
             (
                 "CMakeLists.txt.in".to_string(),
@@ -119,6 +119,10 @@ impl ProjGen {
             (
                 "external/CMakeLists.txt.in".to_string(),
                 include_str!("res/external/CMakeLists.txt.in").to_string(),
+            ),
+            (
+                "source/main.cpp.in".to_string(),
+                include_str!("res/source/main.cpp.in").to_string(),
             ),
         ])
     }
