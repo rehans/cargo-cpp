@@ -4,6 +4,10 @@
         {
             "name": "CMakeLists.txt",
             "template": "res/CMakeLists.txt.in"
+        },
+        {
+            "name": "README.md",
+            "template": "res/README.md.in"
         }
     ],
     "folders": [

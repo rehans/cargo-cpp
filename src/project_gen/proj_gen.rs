@@ -36,6 +36,10 @@ impl ProjGen {
                 "res/CMakeLists.txt.in".to_string(),
                 include_str!("res/CMakeLists.txt.in").to_string(),
             ),
+            (
+                "res/README.md.in".to_string(),
+                include_str!("res/README.md.in").to_string(),
+            ),
         ]);
 
         let project_name = format!("{domain_name}-{target_name}");
