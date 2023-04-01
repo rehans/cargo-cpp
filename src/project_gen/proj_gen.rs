@@ -75,7 +75,7 @@ impl ProjGen {
         string
     }
 
-    pub fn gen_folder_struct(&self) -> Folder {
+    fn gen_folder_struct(&self) -> Folder {
         let mut json_string = include_str!("res/folder_struct.json").to_string();
         json_string = self.replace_vars(json_string);
 
@@ -90,7 +90,7 @@ impl ProjGen {
         folder_path
     }
 
-    pub fn create_folder_struct(&self, out_dir: &PathBuf, folder: &Folder) {
+    fn create_folder_struct(&self, out_dir: &PathBuf, folder: &Folder) {
         let folder_path = self.create_folder(out_dir, folder);
 
         if let Some(folders) = &folder.folders {
