@@ -3,11 +3,11 @@
     "files": [
         {
             "name": "CMakeLists.txt",
-            "template": "CMakeLists.txt.in"
+            "template": "CMakeLists.txt"
         },
         {
             "name": "README.md",
-            "template": "README.md.in"
+            "template": "README.md"
         }
     ],
     "folders": [
@@ -16,7 +16,7 @@
             "files": [
                 {
                     "name": "@TARGET_NAME@.h",
-                    "template": "include/print.h.in"
+                    "template": "include/print.h"
                 }
             ]
         },
@@ -25,11 +25,11 @@
             "files": [
                 {
                     "name": "@TARGET_NAME@.cpp",
-                    "template": "source/print_hello_world.cpp.in"
+                    "template": "source/print_hello_world.cpp"
                 },
                 {
                     "name": "main.cpp",
-                    "template": "source/main.cpp.in"
+                    "template": "source/main.cpp"
                 }
             ]
         },
@@ -47,7 +47,7 @@
             "files": [
                 {
                     "name": "CMakeLists.txt",
-                    "template": "external/CMakeLists.txt.in"
+                    "template": "external/CMakeLists.txt"
                 }
             ]
         }

@@ -101,23 +101,23 @@ impl ProjGen {
     fn create_templates() -> HashMap<String, String> {
         HashMap::from([
             (
-                "include/print.h.in".to_string(),
+                "include/print.h".to_string(),
                 include_str!("res/include/print.h.in").to_string(),
             ),
             (
-                "source/print_hello_world.cpp.in".to_string(),
+                "source/print_hello_world.cpp".to_string(),
                 include_str!("res/source/print_hello_world.cpp.in").to_string(),
             ),
             (
-                "CMakeLists.txt.in".to_string(),
+                "CMakeLists.txt".to_string(),
                 include_str!("res/CMakeLists.txt.in").to_string(),
             ),
             (
-                "README.md.in".to_string(),
+                "README.md".to_string(),
                 include_str!("res/README.md.in").to_string(),
             ),
             (
-                "external/CMakeLists.txt.in".to_string(),
+                "external/CMakeLists.txt".to_string(),
                 include_str!("res/external/CMakeLists.txt.in").to_string(),
             ),
             (
