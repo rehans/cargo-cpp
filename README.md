@@ -38,4 +38,5 @@ Install rustup from here: [https://www.rust-lang.org/](https://www.rust-lang.org
 git clone https://github.com/rehans/cargo-cpp.git
 cd cargo-cpp
 cargo build
+cargo run -- new -t my-project -d my-company
 ```
