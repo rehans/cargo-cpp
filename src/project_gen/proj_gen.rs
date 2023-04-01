@@ -90,18 +90,16 @@ impl ProjGen {
 
     fn create_vars(domain_name: &String, target_name: &String) -> HashMap<String, String> {
         let project_name = format!("{domain_name}-{target_name}");
-        let vars = HashMap::from([
+        HashMap::from([
             ("@DOMAIN_NAME@".to_string(), domain_name.clone()),
             ("@TARGET_NAME@".to_string(), target_name.clone()),
             ("@PROJECT_NAME@".to_string(), project_name.clone()),
             ("@CMAKE_MINIMUM_VERSION@".to_string(), "3.19.0".to_string()),
-        ]);
-
-        vars
+        ])
     }
 
     fn create_templates() -> HashMap<String, String> {
-        let templates = HashMap::from([
+        HashMap::from([
             (
                 "include/header.h.in".to_string(),
                 include_str!("res/include/header.h.in").to_string(),
@@ -122,9 +120,7 @@ impl ProjGen {
                 "external/CMakeLists.txt.in".to_string(),
                 include_str!("res/external/CMakeLists.txt.in").to_string(),
             ),
-        ]);
-
-        templates
+        ])
     }
 }
 
