@@ -2,12 +2,18 @@
 
 The C++ project generator outputs a folder structure like this:
 
-```
+```                                                             ✔ 
 my-project
-+-- include/my-company/my-project/
-+-- source/
-+-- test/
-+-- CMakeLists.txt
+├── CMakeLists.txt
+├── external
+├── include
+│   └── my-company
+│       └── my-project
+│           └── my-project.h
+├── README.md
+├── source
+│   └── my-project.cpp
+└── test
 ```
 
 Use ```./cargo-cpp --help``` for more help.
