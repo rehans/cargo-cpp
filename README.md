@@ -1,8 +1,12 @@
 # Cargo CPP
 
-The C++ project generator outputs a folder structure like this:
+Cargo C++ project generator outputs a folder structure:
+```shell
+cargo-cpp new -t my-project -d my-company
+```
 
-```                                                             ✔ 
+Results in a project folder structure like this:
+```shell
 my-project
 ├── CMakeLists.txt
 ├── external
