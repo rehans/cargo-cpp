@@ -1,6 +1,7 @@
 // Copyright 2023
 
 #include "@DOMAIN_NAME@/@TARGET_NAME@/@TARGET_NAME@.h"
+#include <iostream>
 
 static const char *kHelloWorld = "Hello World";
 
