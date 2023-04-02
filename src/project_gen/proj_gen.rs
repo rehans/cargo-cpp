@@ -121,7 +121,7 @@ impl ProjGen {
                 include_str!("res/external/CMakeLists.txt.in").to_string(),
             ),
             (
-                "source/main.cpp.in".to_string(),
+                "source/main.cpp".to_string(),
                 include_str!("res/source/main.cpp.in").to_string(),
             ),
         ])
