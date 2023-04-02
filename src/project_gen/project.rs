@@ -35,7 +35,7 @@ impl Project {
     }
 
     fn parse_json_proj_struct(&self) -> ProjectFolder {
-        let mut json_string = include_str!("res/folder_struct.json").to_string();
+        let mut json_string = include_str!("res/project_structure.json").to_string();
         json_string = json_string.replace_vars(&self.vars);
 
         serde_json::from_str(&json_string).unwrap()
