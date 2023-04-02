@@ -116,7 +116,7 @@ impl ProjGen {
     }
 
     fn create_templates() -> HashMap<String, String> {
-        HashMap::from([
+        let templates = [
             (
                 "include/print.h".to_string(),
                 include_str!("res/include/print.h.in").to_string(),
@@ -141,7 +141,8 @@ impl ProjGen {
                 "source/main.cpp".to_string(),
                 include_str!("res/source/main.cpp.in").to_string(),
             ),
-        ])
+        ];
+        HashMap::from(templates)
     }
 }
 
