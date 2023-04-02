@@ -24,7 +24,7 @@ pub struct ProjGen {
 impl ProjGen {
     pub fn new(domain_name: String, target_name: String, out_dir: Option<PathBuf>) -> Self {
         Self {
-            vars: Self::create_vars(&domain_name, &target_name),
+            vars: Self::create_vars(&domain_name.make_conform(), &target_name.make_conform()),
             templates: Self::create_templates(),
             out_dir,
         }
@@ -135,6 +135,19 @@ impl ProjGen {
                 include_str!("res/source/main.cpp.in").to_string(),
             ),
         ])
+    }
+}
+
+trait Conform {
+    fn make_conform(&self) -> Self;
+}
+
+impl Conform for String {
+    fn make_conform(&self) -> String {
+        // Replace all whitespaces and make lower case
+        let mut conform_name = self.replace(char::is_whitespace, "_");
+        conform_name = conform_name.to_lowercase();
+        conform_name
     }
 }
 
