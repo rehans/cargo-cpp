@@ -12,16 +12,16 @@ impl ProjFile {
     where
         F: Fn(&String) -> Option<String>,
     {
-        let mut file_path = out_dir.clone();
-        file_path.push(&self.name);
+        let mut path = out_dir.clone();
+        path.push(&self.name);
 
         if let Some(content_file) = &self.template {
             if let Some(content) = f(content_file) {
-                fs::write(&file_path, content).expect("Could not write file {path}!")
+                fs::write(&path, content).expect("Could not write file {path}!")
             }
         }
 
-        file_path
+        path
     }
 }
 
