@@ -47,7 +47,7 @@ impl ProjFolder {
     {
         let path = self.create_at(out_dir);
 
-        // folder
+        // folders
         if let Some(folders) = &self.folders {
             for sub_folder in folders.iter() {
                 sub_folder.create_recursively_at(&path, f);
