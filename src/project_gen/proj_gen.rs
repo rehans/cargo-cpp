@@ -73,11 +73,11 @@ impl ProjGen {
 
         // files
         if let Some(files) = &folder.files {
-            self.create_files_at(files, folder_path);
+            self.create_files_at(files, &folder_path);
         };
     }
 
-    fn create_files_at(&self, files: &Vec<ProjFile>, folder_path: PathBuf) {
+    fn create_files_at(&self, files: &Vec<ProjFile>, folder_path: &PathBuf) {
         for file in files.iter() {
             let mut file_path = folder_path.clone();
             file_path.push(&file.name);
