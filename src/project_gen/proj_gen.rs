@@ -7,11 +7,62 @@ pub struct ProjFile {
     template: Option<String>,
 }
 
+impl ProjFile {
+    pub fn create_at<F>(&self, out_dir: &PathBuf, f: &F) -> PathBuf
+    where
+        F: Fn(&String) -> Option<String>,
+    {
+        let mut file_path = out_dir.clone();
+        file_path.push(&self.name);
+
+        if let Some(content_file) = &self.template {
+            if let Some(content) = f(content_file) {
+                fs::write(&file_path, content).expect("Could not write file {path}!")
+            }
+        }
+
+        file_path
+    }
+}
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ProjFolder {
     name: String,
     folders: Option<Vec<ProjFolder>>,
     files: Option<Vec<ProjFile>>,
+}
+
+impl ProjFolder {
+    fn create_at(&self, out_dir: &PathBuf) -> PathBuf {
+        let mut path = out_dir.clone();
+        path.push(&self.name);
+
+        fs::create_dir_all(&path).expect("Could not create directory {path}");
+        path
+    }
+
+    pub fn create_recursively_at<F>(&self, out_dir: &PathBuf, f: &F) -> PathBuf
+    where
+        F: Fn(&String) -> Option<String>,
+    {
+        let path = self.create_at(out_dir);
+
+        // folder
+        if let Some(folders) = &self.folders {
+            for sub_folder in folders.iter() {
+                sub_folder.create_recursively_at(&path, f);
+            }
+        };
+
+        // files
+        if let Some(files) = &self.files {
+            for file in files.iter() {
+                file.create_at(&path, f);
+            }
+        };
+
+        path
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -24,7 +75,7 @@ pub struct ProjGen {
 impl ProjGen {
     pub fn new(domain_name: String, target_name: String, out_dir: Option<PathBuf>) -> Self {
         Self {
-            vars: Self::create_vars(&domain_name.make_conform(), &target_name.make_conform()),
+            vars: Self::create_vars(&domain_name.conform(), &target_name.conform()),
             templates: Self::create_templates(),
             out_dir,
         }
@@ -36,66 +87,22 @@ impl ProjGen {
             .clone()
             .unwrap_or(PathBuf::from(std::env::current_dir().unwrap().clone()));
 
-        let folder = self.gen_folder_struct();
-        self.create_folder_struct(&out_dir, &folder);
+        let folder = self.parse_json_proj_struct();
+
+        folder.create_recursively_at(&out_dir, &|content_file: &String| -> Option<String> {
+            let opt_content = self.templates.get(content_file);
+            match opt_content {
+                Some(content) => Some(content.clone().replace_vars(&self.vars)),
+                None => None,
+            }
+        });
     }
 
-    fn replace_vars(&self, mut string: String) -> String {
-        for (key, value) in self.vars.iter() {
-            string = string.replace(key, value);
-        }
-
-        string
-    }
-
-    fn gen_folder_struct(&self) -> ProjFolder {
+    fn parse_json_proj_struct(&self) -> ProjFolder {
         let mut json_string = include_str!("res/folder_struct.json").to_string();
-        json_string = self.replace_vars(json_string);
+        json_string = json_string.replace_vars(&self.vars);
 
         serde_json::from_str(&json_string).unwrap()
-    }
-
-    fn create_folder(&self, out_dir: &PathBuf, folder: &ProjFolder) -> PathBuf {
-        let mut folder_path = out_dir.clone();
-        folder_path.push(&folder.name);
-
-        fs::create_dir_all(&folder_path).expect("Could not create directory {path}");
-        folder_path
-    }
-
-    fn create_folder_struct(&self, out_dir: &PathBuf, folder: &ProjFolder) {
-        let folder_path = self.create_folder(out_dir, folder);
-
-        // folders
-        if let Some(folders) = &folder.folders {
-            self.create_folders_at(folders, &folder_path);
-        };
-
-        // files
-        if let Some(files) = &folder.files {
-            self.create_files_at(files, &folder_path);
-        };
-    }
-
-    fn create_files_at(&self, files: &Vec<ProjFile>, folder_path: &PathBuf) {
-        for file in files.iter() {
-            let mut file_path = folder_path.clone();
-            file_path.push(&file.name);
-
-            if let Some(content_file) = &file.template {
-                if let Some(content) = self.templates.get(content_file) {
-                    let mut tmp_content = content.clone();
-                    tmp_content = self.replace_vars(tmp_content);
-                    fs::write(file_path, tmp_content).expect("Could not write file {path}!")
-                }
-            }
-        }
-    }
-
-    fn create_folders_at(&self, folders: &Vec<ProjFolder>, folder_path: &PathBuf) {
-        for sub_folder in folders.iter() {
-            self.create_folder_struct(folder_path, &sub_folder);
-        }
     }
 
     fn create_vars(domain_name: &String, target_name: &String) -> HashMap<String, String> {
@@ -138,16 +145,23 @@ impl ProjGen {
     }
 }
 
-trait Conform {
-    fn make_conform(&self) -> Self;
+trait StringExt {
+    fn conform(&self) -> Self;
+    fn replace_vars(self, vars: &HashMap<String, String>) -> Self;
 }
 
-impl Conform for String {
-    fn make_conform(&self) -> String {
-        // Replace all whitespaces and make lower case
-        let mut conform_name = self.replace(char::is_whitespace, "_");
-        conform_name = conform_name.to_lowercase();
-        conform_name
+impl StringExt for String {
+    fn conform(&self) -> String {
+        self.replace(char::is_whitespace, "_").to_lowercase()
+    }
+
+    fn replace_vars(self, vars: &HashMap<String, String>) -> String {
+        let mut string = self.clone();
+        for (key, value) in vars.iter() {
+            string = string.replace(key, value);
+        }
+
+        string
     }
 }
 
@@ -160,7 +174,7 @@ mod tests {
     fn test() {
         let out_dir = Some(PathBuf::from(std::env::current_dir().unwrap().clone()));
         let proj_gen = ProjGen::new("hao".to_string(), "mylib".to_string(), out_dir);
-        let proj_struct = proj_gen.gen_folder_struct();
+        let proj_struct = proj_gen.parse_json_proj_struct();
         println!("{proj_struct:#?}");
 
         proj_gen.gen();
