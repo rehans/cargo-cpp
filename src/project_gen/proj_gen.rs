@@ -89,7 +89,7 @@ impl ProjGen {
 
         let folder = self.parse_json_proj_struct();
 
-        folder.create_recursively_at(&out_dir, &|content_file: &String| -> Option<String> {
+        folder.create_recursively_at(&out_dir, &|content_file| -> Option<String> {
             let opt_content = self.templates.get(content_file);
             match opt_content {
                 Some(content) => Some(content.clone().replace_vars(&self.vars)),
