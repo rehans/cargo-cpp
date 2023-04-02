@@ -66,26 +66,36 @@ impl ProjGen {
     fn create_folder_struct(&self, out_dir: &PathBuf, folder: &ProjFolder) {
         let folder_path = self.create_folder(out_dir, folder);
 
+        // folders
         if let Some(folders) = &folder.folders {
-            for sub_folder in folders.iter() {
-                self.create_folder_struct(&folder_path, &sub_folder);
-            }
+            self.create_folders_at(folders, &folder_path);
         };
 
+        // files
         if let Some(files) = &folder.files {
-            for file in files.iter() {
-                let mut file_path = folder_path.clone();
-                file_path.push(&file.name);
+            self.create_files_at(files, folder_path);
+        };
+    }
 
-                if let Some(content_file) = &file.template {
-                    if let Some(content) = self.templates.get(content_file) {
-                        let mut tmp_content = content.clone();
-                        tmp_content = self.replace_vars(tmp_content);
-                        fs::write(file_path, tmp_content).expect("Could not write file {path}!")
-                    }
+    fn create_files_at(&self, files: &Vec<ProjFile>, folder_path: PathBuf) {
+        for file in files.iter() {
+            let mut file_path = folder_path.clone();
+            file_path.push(&file.name);
+
+            if let Some(content_file) = &file.template {
+                if let Some(content) = self.templates.get(content_file) {
+                    let mut tmp_content = content.clone();
+                    tmp_content = self.replace_vars(tmp_content);
+                    fs::write(file_path, tmp_content).expect("Could not write file {path}!")
                 }
             }
-        };
+        }
+    }
+
+    fn create_folders_at(&self, folders: &Vec<ProjFolder>, folder_path: &PathBuf) {
+        for sub_folder in folders.iter() {
+            self.create_folder_struct(folder_path, &sub_folder);
+        }
     }
 
     fn create_vars(domain_name: &String, target_name: &String) -> HashMap<String, String> {
