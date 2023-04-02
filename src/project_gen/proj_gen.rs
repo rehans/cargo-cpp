@@ -2,12 +2,12 @@ use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, fs, path::PathBuf};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct ProjFile {
+pub struct ProjectFile {
     name: String,
     template: Option<String>,
 }
 
-impl ProjFile {
+impl ProjectFile {
     pub fn create_at<F>(&self, out_dir: &PathBuf, f: &F) -> PathBuf
     where
         F: Fn(&String) -> Option<String>,
@@ -26,13 +26,13 @@ impl ProjFile {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-struct ProjFolder {
+struct ProjectFolder {
     name: String,
-    folders: Option<Vec<ProjFolder>>,
-    files: Option<Vec<ProjFile>>,
+    folders: Option<Vec<ProjectFolder>>,
+    files: Option<Vec<ProjectFile>>,
 }
 
-impl ProjFolder {
+impl ProjectFolder {
     fn create_at(&self, out_dir: &PathBuf) -> PathBuf {
         let mut path = out_dir.clone();
         path.push(&self.name);
@@ -66,13 +66,13 @@ impl ProjFolder {
 }
 
 #[derive(Debug, Clone)]
-pub struct ProjGen {
+pub struct Project {
     vars: HashMap<String, String>,
     templates: HashMap<String, String>,
     out_dir: Option<PathBuf>,
 }
 
-impl ProjGen {
+impl Project {
     pub fn new(domain_name: String, target_name: String, out_dir: Option<PathBuf>) -> Self {
         Self {
             vars: Self::create_vars(&domain_name.conform(), &target_name.conform()),
@@ -98,7 +98,7 @@ impl ProjGen {
         });
     }
 
-    fn parse_json_proj_struct(&self) -> ProjFolder {
+    fn parse_json_proj_struct(&self) -> ProjectFolder {
         let mut json_string = include_str!("res/folder_struct.json").to_string();
         json_string = json_string.replace_vars(&self.vars);
 
@@ -174,7 +174,7 @@ mod tests {
     #[test]
     fn test() {
         let out_dir = Some(PathBuf::from(std::env::current_dir().unwrap().clone()));
-        let proj_gen = ProjGen::new("hao".to_string(), "mylib".to_string(), out_dir);
+        let proj_gen = Project::new("hao".to_string(), "mylib".to_string(), out_dir);
         let proj_struct = proj_gen.parse_json_proj_struct();
         println!("{proj_struct:#?}");
 

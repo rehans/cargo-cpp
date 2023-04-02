@@ -35,7 +35,7 @@ fn main() -> std::io::Result<()> {
             output_dir,
             verbose: _,
         } => {
-            proj_gen::ProjGen::new(domain_name, target_name, output_dir).gen();
+            proj_gen::Project::new(domain_name, target_name, output_dir).gen();
         }
     }
 
