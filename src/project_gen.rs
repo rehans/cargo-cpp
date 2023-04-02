@@ -1,1 +1,1 @@
-pub mod proj_gen;
+pub mod project;

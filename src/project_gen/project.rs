@@ -1,70 +1,6 @@
 use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, fs, path::PathBuf};
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct ProjectFile {
-    name: String,
-    template: Option<String>,
-}
-
-impl ProjectFile {
-    pub fn create_at<F>(&self, out_dir: &PathBuf, f: &F) -> PathBuf
-    where
-        F: Fn(&String) -> Option<String>,
-    {
-        let mut path = out_dir.clone();
-        path.push(&self.name);
-
-        if let Some(content_file) = &self.template {
-            if let Some(content) = f(content_file) {
-                fs::write(&path, content).expect("Could not write file {path}!")
-            }
-        }
-
-        path
-    }
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone)]
-struct ProjectFolder {
-    name: String,
-    folders: Option<Vec<ProjectFolder>>,
-    files: Option<Vec<ProjectFile>>,
-}
-
-impl ProjectFolder {
-    fn create_at(&self, out_dir: &PathBuf) -> PathBuf {
-        let mut path = out_dir.clone();
-        path.push(&self.name);
-
-        fs::create_dir_all(&path).expect("Could not create directory {path}");
-        path
-    }
-
-    pub fn create_recursively_at<F>(&self, out_dir: &PathBuf, f: &F) -> PathBuf
-    where
-        F: Fn(&String) -> Option<String>,
-    {
-        let path = self.create_at(out_dir);
-
-        // folders
-        if let Some(folders) = &self.folders {
-            for sub_folder in folders.iter() {
-                sub_folder.create_recursively_at(&path, f);
-            }
-        };
-
-        // files
-        if let Some(files) = &self.files {
-            for file in files.iter() {
-                file.create_at(&path, f);
-            }
-        };
-
-        path
-    }
-}
-
 #[derive(Debug, Clone)]
 pub struct Project {
     vars: HashMap<String, String>,
@@ -143,6 +79,70 @@ impl Project {
             ),
         ];
         HashMap::from(templates)
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct ProjectFile {
+    name: String,
+    template: Option<String>,
+}
+
+impl ProjectFile {
+    fn create_at<F>(&self, out_dir: &PathBuf, f: &F) -> PathBuf
+    where
+        F: Fn(&String) -> Option<String>,
+    {
+        let mut path = out_dir.clone();
+        path.push(&self.name);
+
+        if let Some(content_file) = &self.template {
+            if let Some(content) = f(content_file) {
+                fs::write(&path, content).expect("Could not write file {path}!")
+            }
+        }
+
+        path
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+struct ProjectFolder {
+    name: String,
+    folders: Option<Vec<ProjectFolder>>,
+    files: Option<Vec<ProjectFile>>,
+}
+
+impl ProjectFolder {
+    fn create_at(&self, out_dir: &PathBuf) -> PathBuf {
+        let mut path = out_dir.clone();
+        path.push(&self.name);
+
+        fs::create_dir_all(&path).expect("Could not create directory {path}");
+        path
+    }
+
+    fn create_recursively_at<F>(&self, out_dir: &PathBuf, f: &F) -> PathBuf
+    where
+        F: Fn(&String) -> Option<String>,
+    {
+        let path = self.create_at(out_dir);
+
+        // folders
+        if let Some(folders) = &self.folders {
+            for sub_folder in folders.iter() {
+                sub_folder.create_recursively_at(&path, f);
+            }
+        };
+
+        // files
+        if let Some(files) = &self.files {
+            for file in files.iter() {
+                file.create_at(&path, f);
+            }
+        };
+
+        path
     }
 }
 

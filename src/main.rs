@@ -1,7 +1,7 @@
 mod project_gen;
 
 use clap::{ArgAction, Parser, Subcommand};
-use project_gen::proj_gen;
+use project_gen::project;
 use std::path::PathBuf;
 
 #[derive(Debug, Parser)]
@@ -35,7 +35,7 @@ fn main() -> std::io::Result<()> {
             output_dir,
             verbose: _,
         } => {
-            proj_gen::Project::new(domain_name, target_name, output_dir).gen();
+            project::Project::new(domain_name, target_name, output_dir).gen();
         }
     }
 
