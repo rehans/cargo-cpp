@@ -26,7 +26,7 @@ impl ProjFile {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct ProjFolder {
+struct ProjFolder {
     name: String,
     folders: Option<Vec<ProjFolder>>,
     files: Option<Vec<ProjFile>>,
