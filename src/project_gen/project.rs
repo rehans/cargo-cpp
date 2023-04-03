@@ -1,6 +1,16 @@
 use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, fs, path::PathBuf};
 
+enum PathType {
+    File {
+        path: PathBuf,
+        opt_template: Option<String>,
+    },
+    Folder {
+        path: PathBuf,
+    },
+}
+
 #[derive(Debug, Clone)]
 pub struct Project {
     vars: HashMap<String, String>,
@@ -25,11 +35,21 @@ impl Project {
 
         let folder = self.parse_json_proj_struct();
 
-        folder.create_recursively_at(&out_dir, &|content_file| -> Option<String> {
-            let opt_content = self.templates.get(content_file);
-            match opt_content {
-                Some(content) => Some(content.clone().replace_vars(&self.vars)),
-                None => None,
+        folder.create_recursively_at(&out_dir, &|path_type| match path_type {
+            PathType::File { path, opt_template } => match opt_template {
+                Some(template) => {
+                    let opt_content = self.templates.get(template);
+                    if let Some(content) = opt_content {
+                        let tmp = content.clone().replace_vars(&self.vars);
+                        fs::write(&path, tmp).expect("Could not write file {path}!");
+                        // println!("{path:#?}");
+                    }
+                }
+                None => (),
+            },
+            PathType::Folder { path } => {
+                fs::create_dir_all(&path).expect("Could not create directory {path}");
+                // println!("{path:#?}");
             }
         });
     }
@@ -89,18 +109,18 @@ pub struct ProjectFile {
 }
 
 impl ProjectFile {
-    fn create_at<F>(&self, out_dir: &PathBuf, f: &F) -> PathBuf
+    fn create_at<F>(&self, out_dir: &PathBuf, fn_create: &F) -> PathBuf
     where
-        F: Fn(&String) -> Option<String>,
+        F: Fn(&PathType),
     {
         let mut path = out_dir.clone();
         path.push(&self.name);
 
-        if let Some(content_file) = &self.template {
-            if let Some(content) = f(content_file) {
-                fs::write(&path, content).expect("Could not write file {path}!")
-            }
-        }
+        let path_type = PathType::File {
+            path: path.clone(),
+            opt_template: self.template.clone(),
+        };
+        fn_create(&path_type);
 
         path
     }
@@ -114,19 +134,22 @@ struct ProjectFolder {
 }
 
 impl ProjectFolder {
-    fn create_at(&self, out_dir: &PathBuf) -> PathBuf {
+    fn create_at<F>(&self, out_dir: &PathBuf, fn_create: &F) -> PathBuf
+    where
+        F: Fn(&PathType),
+    {
         let mut path = out_dir.clone();
         path.push(&self.name);
-
+        fn_create(&PathType::Folder { path: path.clone() });
         fs::create_dir_all(&path).expect("Could not create directory {path}");
         path
     }
 
     fn create_recursively_at<F>(&self, out_dir: &PathBuf, f: &F) -> PathBuf
     where
-        F: Fn(&String) -> Option<String>,
+        F: Fn(&PathType),
     {
-        let path = self.create_at(out_dir);
+        let path = self.create_at(out_dir, f);
 
         // folders
         if let Some(folders) = &self.folders {
