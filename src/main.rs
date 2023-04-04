@@ -1,6 +1,7 @@
 mod project_gen;
 
-use clap::{ArgAction, Parser, Subcommand};
+use clap::{Parser, Subcommand};
+use log::info;
 use project_gen::project;
 use std::path::PathBuf;
 
@@ -21,20 +22,23 @@ enum Commands {
         target_name: String,
         #[arg(short, long)]
         output_dir: Option<PathBuf>,
-        #[arg(short, long, action(ArgAction::SetTrue))]
-        verbose: Option<bool>,
     },
 }
 
 fn main() -> std::io::Result<()> {
+    env_logger::init();
+
     let args = Cli::parse();
     match args.command {
         Commands::New {
             domain_name,
             target_name,
             output_dir,
-            verbose: _,
         } => {
+            info!("Domain: {domain_name:#?}");
+            info!("Target: {target_name:#?}");
+            info!("Output: {output_dir:#?}");
+
             project::Project::new(domain_name, target_name, output_dir).gen();
         }
     }

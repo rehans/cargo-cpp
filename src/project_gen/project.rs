@@ -1,3 +1,4 @@
+use log::info;
 use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, fs, path::PathBuf};
 
@@ -42,14 +43,14 @@ impl Project {
                     if let Some(content) = opt_content {
                         let tmp = content.clone().replace_vars(&self.vars);
                         fs::write(&path, tmp).expect("Could not write file {path}!");
-                        // println!("{path:#?}");
+                        info!("Created: {path:#?}");
                     }
                 }
                 None => (),
             },
             PathType::Folder { path } => {
                 fs::create_dir_all(&path).expect("Could not create directory {path}");
-                // println!("{path:#?}");
+                info!("Created: {path:#?}");
             }
         });
     }

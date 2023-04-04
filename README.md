@@ -34,6 +34,11 @@ cmake --build .
 
 Use ```./cargo-cpp --help``` for more help.
 
+Run with logging:
+```shell
+RUST_LOG=INFO cargo-cpp new -t my-project -d my-company
+```
+
 ## Motivation
 
 * Learning Rust ;)
