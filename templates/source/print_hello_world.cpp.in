@@ -1,6 +1,6 @@
 // Copyright 2023
 
-#include "@DOMAIN_NAME@/@TARGET_NAME@/@TARGET_NAME@.h"
+#include "{{ config.domain_name }}/{{ config.target_name }}/{{ config.target_name }}.h"
 #include <iostream>
 
 void print()

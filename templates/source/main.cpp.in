@@ -1,0 +1,9 @@
+// Copyright 2023
+
+#include "{{ config.domain_name }}/{{ config.target_name }}/{{ config.target_name }}.h"
+
+int main()
+{
+    print();
+    return 0;
+}

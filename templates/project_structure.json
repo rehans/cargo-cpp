@@ -1,22 +1,22 @@
 {
-    "name": "@TARGET_NAME@",
+    "name": "{{ config.target_name }}",
     "files": [
         {
             "name": "CMakeLists.txt",
-            "template": "CMakeLists.txt"
+            "template": "CMakeLists.txt.in"
         },
         {
             "name": "README.md",
-            "template": "README.md"
+            "template": "README.md.in"
         }
     ],
     "folders": [
         {
-            "name": "include/@DOMAIN_NAME@/@TARGET_NAME@",
+            "name": "include/{{ config.domain_name }}/{{ config.target_name }}",
             "files": [
                 {
-                    "name": "@TARGET_NAME@.h",
-                    "template": "include/print.h"
+                    "name": "{{ config.target_name }}.h",
+                    "template": "include/print.h.in"
                 }
             ]
         },
@@ -24,12 +24,12 @@
             "name": "source",
             "files": [
                 {
-                    "name": "@TARGET_NAME@.cpp",
-                    "template": "source/print_hello_world.cpp"
+                    "name": "{{ config.target_name }}.cpp",
+                    "template": "source/print_hello_world.cpp.in"
                 },
                 {
                     "name": "main.cpp",
-                    "template": "source/main.cpp"
+                    "template": "source/main.cpp.in"
                 }
             ]
         },
@@ -37,8 +37,7 @@
             "name": "test",
             "files": [
                 {
-                    "name": "@TARGET_NAME@_test.cpp",
-                    "template": "<content>"
+                    "name": "{{ config.target_name }}_test.cpp.in"
                 }
             ]
         },
@@ -47,7 +46,7 @@
             "files": [
                 {
                     "name": "CMakeLists.txt",
-                    "template": "external/CMakeLists.txt"
+                    "template": "external/CMakeLists.txt.in"
                 }
             ]
         }

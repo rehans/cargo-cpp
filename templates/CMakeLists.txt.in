@@ -1,0 +1,39 @@
+cmake_minimum_required(VERSION {{ config.cmake_minimum_version }})
+
+project({{ config.project_name }})
+
+add_subdirectory(external)
+
+# library
+add_library({{ config.target_name }} STATIC
+    include/{{ config.domain_name }}/{{ config.target_name }}/{{ config.target_name }}.h
+    source/{{ config.target_name }}.cpp
+)
+
+target_include_directories({{ config.target_name }}
+    PUBLIC
+        include
+    PRIVATE
+        source
+)
+
+target_compile_features({{ config.target_name }} 
+    PRIVATE 
+        cxx_std_17
+)
+{% if with_test_app %}
+# executable
+add_executable({{ config.target_name }}-app
+    source/main.cpp
+)
+
+target_link_libraries({{ config.target_name }}-app
+    PRIVATE
+        {{ config.target_name }}
+)
+
+target_compile_features({{ config.target_name }}-app
+    PRIVATE 
+        cxx_std_17
+)
+{% endif %}

@@ -1,4 +1,4 @@
-# @DOMAIN_NAME@ @TARGET_NAME@
+# {{ config.domain_name }} {{ config.target_name }}
 
 ## Motivation
 
