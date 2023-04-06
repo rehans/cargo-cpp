@@ -124,9 +124,7 @@ impl ProjectFile {
     where
         F: Fn(&PathType),
     {
-        let mut path = out_dir.clone();
-        path.push(&self.name);
-
+        let path = out_dir.join(&self.name);
         let path_type = PathType::File {
             path: path.clone(),
             opt_template: self.template.clone(),
@@ -149,8 +147,7 @@ impl ProjectFolder {
     where
         F: Fn(&PathType),
     {
-        let mut path = out_dir.clone();
-        path.push(&self.name);
+        let path = out_dir.join(&self.name);
         fn_create(&PathType::Folder { path: path.clone() });
         fs::create_dir_all(&path).expect("Could not create directory {path}");
         path
