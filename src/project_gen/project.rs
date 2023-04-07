@@ -11,7 +11,7 @@ static PROJECT_STRUCTURE_TEMPLATE: &str = "project_structure.json";
 enum PathType {
     File {
         path: PathBuf,
-        opt_template: Option<String>,
+        opt_template_file: Option<String>,
     },
     Folder {
         path: PathBuf,
@@ -47,23 +47,17 @@ impl Project {
         folder.create_recursively_at(&out_dir, &|path_type| match path_type {
             PathType::File {
                 path,
-                opt_template: opt_template_file,
-            } => match opt_template_file {
-                Some(template_file) => {
-                    let template_content = PROJECT_TEMPLATES
-                        .get_file(template_file)
-                        .unwrap()
-                        .contents_utf8()
-                        .unwrap();
-
-                    let rendered = Tera::one_off(template_content, &tera_context, true)
+                opt_template_file,
+            } => {
+                if let Some(template_file) = opt_template_file {
+                    let content = Self::template_file_content(template_file);
+                    let rendered = Tera::one_off(content, &tera_context, true)
                         .expect("Cannot render file {template_file}");
 
                     fs::write(&path, rendered).expect("Could not write file {path}!");
                     info!("Created: {path:#?}");
                 }
-                None => (),
-            },
+            }
             PathType::Folder { path } => {
                 fs::create_dir_all(&path).expect("Could not create directory {path}");
                 info!("Created: {path:#?}");
@@ -88,28 +82,32 @@ impl Project {
         context
     }
 
+    fn template_file_content(template_file: &String) -> &'static str {
+        PROJECT_TEMPLATES
+            .get_file(template_file)
+            .expect(&format!("Cannot find template for {template_file}"))
+            .contents_utf8()
+            .expect(&format!("Cannot read utf8 string from {template_file}"))
+    }
+
     fn parse_json_proj_struct(&self) -> ProjectFolder {
         let opt_file = PROJECT_TEMPLATES.get_file(PROJECT_STRUCTURE_TEMPLATE);
         match opt_file {
             Some(file) => {
                 let opt_path_str = file.path().to_str();
                 if let Some(path_str) = opt_path_str {
-                    let template_content = PROJECT_TEMPLATES
-                        .get_file(path_str)
-                        .unwrap()
-                        .contents_utf8()
-                        .unwrap();
+                    let template_content = Self::template_file_content(&path_str.to_string());
+                    let rendered =
+                        Tera::one_off(template_content, &self.new_tera_context(), true).unwrap();
 
-                    let rendered = Tera::one_off(template_content, &self.new_tera_context(), true)
-                        .expect("Cannot render file {path_str}");
-
-                    return serde_json::from_str(&rendered).unwrap();
+                    let p: ProjectFolder = serde_json::from_str(&rendered).unwrap();
+                    p
                 } else {
                     todo!()
                 }
             }
             None => todo!(),
-        };
+        }
     }
 }
 
@@ -127,7 +125,7 @@ impl ProjectFile {
         let path = out_dir.join(&self.name);
         let path_type = PathType::File {
             path: path.clone(),
-            opt_template: self.template.clone(),
+            opt_template_file: self.template.clone(),
         };
         fn_create(&path_type);
 
@@ -247,9 +245,9 @@ mod tests {
         let path = "project_structure.json";
         let template = PROJECT_TEMPLATES
             .get_file(path)
-            .unwrap()
+            .expect(&format!("Cannot find file {path}!"))
             .contents_utf8()
-            .unwrap();
+            .expect(&format!("Contents of {path} cannot be read!"));
 
         let rendered = Tera::one_off(template, &ctx, true).expect("Cannot load file");
 
