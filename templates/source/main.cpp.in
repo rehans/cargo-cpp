@@ -1,4 +1,4 @@
-// Copyright 2023
+// Copyright {{ config.year }} {{ config.domain_name }}
 
 #include "{{ config.domain_name }}/{{ config.target_name }}/{{ config.target_name }}.h"
 

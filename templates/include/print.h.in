@@ -1,3 +1,3 @@
-// Copyright 2023
+// Copyright {{ config.year }} {{ config.domain_name }}
 
 void print();

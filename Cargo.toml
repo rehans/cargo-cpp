@@ -14,6 +14,7 @@ log = "0.4.17"
 env_logger = "0.10.0"
 tera = "1.18.1"
 include_dir = "0.7.3"
+chrono = "0.4.24"
 
 # See also https://github.com/johnthagen/min-sized-rust
 [profile.release]
