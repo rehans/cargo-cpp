@@ -1,3 +1,5 @@
+// Copyright(c) 2023 rehans.
+
 use include_dir::{include_dir, Dir};
 use log::info;
 use serde::{Deserialize, Serialize};

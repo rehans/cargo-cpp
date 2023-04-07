@@ -1,3 +1,5 @@
+// Copyright(c) 2023 rehans.
+
 mod project_gen;
 
 use clap::{Parser, Subcommand};
