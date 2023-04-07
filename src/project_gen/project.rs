@@ -73,15 +73,12 @@ impl Project {
         let target_name = self.target_name.clone();
         let project_name = format!("{}-{}", domain_name.clone(), target_name.clone());
 
-        let current_date = chrono::Utc::now();
-        let year = current_date.year();
-
         let mut config = HashMap::new();
         config.insert("target_name", target_name);
         config.insert("domain_name", domain_name);
         config.insert("project_name", project_name);
         config.insert("cmake_minimum_version", "3.19.0".to_string());
-        config.insert("year", year.to_string());
+        config.insert("year", chrono::Utc::now().year().to_string());
 
         let mut context = Context::new();
         context.insert("with_test_app", &true);
