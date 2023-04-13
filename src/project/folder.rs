@@ -1,15 +1,19 @@
-use super::{file::ProjectFile, PathType};
+// Copyright(c) 2023 rehans.
+
+use super::file;
+use super::PathType;
+
 use serde::{Deserialize, Serialize};
 use std::{fs, path::PathBuf};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct ProjectFolder {
+pub struct Folder {
     name: String,
-    folders: Option<Vec<ProjectFolder>>,
-    files: Option<Vec<ProjectFile>>,
+    folders: Option<Vec<Folder>>,
+    files: Option<Vec<file::File>>,
 }
 
-impl ProjectFolder {
+impl Folder {
     fn create_at<F>(&self, out_dir: &PathBuf, fn_create: &F) -> PathBuf
     where
         F: Fn(&PathType),

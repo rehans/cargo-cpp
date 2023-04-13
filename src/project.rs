@@ -1,15 +1,14 @@
 // Copyright(c) 2023 rehans.
 
-use self::folder::ProjectFolder;
+mod file;
+mod folder;
+
 use chrono::Datelike;
 use include_dir::{include_dir, Dir};
 use log::info;
 use std::path::PathBuf;
 use std::{collections::HashMap, fs};
 use tera::{Context, Tera};
-
-pub mod file;
-pub mod folder;
 
 pub enum PathType {
     File {
@@ -98,7 +97,7 @@ impl Project {
             .expect(&format!("Cannot read utf8 string from {template_file}"))
     }
 
-    fn parse_json_proj_struct(&self) -> ProjectFolder {
+    fn parse_json_proj_struct(&self) -> folder::Folder {
         let opt_file = PROJECT_TEMPLATES.get_file(PROJECT_STRUCTURE_TEMPLATE);
         match opt_file {
             Some(file) => {
@@ -108,7 +107,7 @@ impl Project {
                     let rendered =
                         Tera::one_off(template_content, &self.new_tera_context(), true).unwrap();
 
-                    let p: ProjectFolder = serde_json::from_str(&rendered).unwrap();
+                    let p: folder::Folder = serde_json::from_str(&rendered).unwrap();
                     p
                 } else {
                     todo!()
