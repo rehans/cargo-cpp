@@ -4,7 +4,7 @@ use super::file;
 use super::PathType;
 
 use serde::{Deserialize, Serialize};
-use std::{fs, path::PathBuf};
+use std::path::PathBuf;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Folder {
@@ -20,7 +20,7 @@ impl Folder {
     {
         let path = out_dir.join(&self.name);
         fn_create(&PathType::Folder { path: path.clone() });
-        fs::create_dir_all(&path).expect("Could not create directory {path}");
+
         path
     }
 
