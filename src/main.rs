@@ -1,10 +1,9 @@
 // Copyright(c) 2023 rehans.
 
-mod project_gen;
+mod project;
 
 use clap::{Parser, Subcommand};
 use log::info;
-use project_gen::project;
 use std::path::PathBuf;
 
 #[derive(Debug, Parser)]

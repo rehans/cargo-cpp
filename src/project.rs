@@ -1,17 +1,17 @@
 // Copyright(c) 2023 rehans.
 
+use self::folder::ProjectFolder;
 use chrono::Datelike;
 use include_dir::{include_dir, Dir};
 use log::info;
-use serde::{Deserialize, Serialize};
-use std::{collections::HashMap, fs, path::PathBuf};
+use std::path::PathBuf;
+use std::{collections::HashMap, fs};
 use tera::{Context, Tera};
 
-// Compile all files in /templates folder into the binary
-static PROJECT_TEMPLATES: Dir = include_dir!("$CARGO_MANIFEST_DIR/templates");
-static PROJECT_STRUCTURE_TEMPLATE: &str = "project_structure.json";
+pub mod file;
+pub mod folder;
 
-enum PathType {
+pub enum PathType {
     File {
         path: PathBuf,
         opt_template_file: Option<String>,
@@ -20,6 +20,10 @@ enum PathType {
         path: PathBuf,
     },
 }
+
+// Compile all files in /templates folder into the binary
+static PROJECT_TEMPLATES: Dir = include_dir!("$CARGO_MANIFEST_DIR/templates");
+static PROJECT_STRUCTURE_TEMPLATE: &str = "project_structure.json";
 
 #[derive(Debug, Clone)]
 pub struct Project {
@@ -112,70 +116,6 @@ impl Project {
             }
             None => todo!(),
         }
-    }
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct ProjectFile {
-    name: String,
-    template: Option<String>,
-}
-
-impl ProjectFile {
-    fn create_at<F>(&self, out_dir: &PathBuf, fn_create: &F) -> PathBuf
-    where
-        F: Fn(&PathType),
-    {
-        let path = out_dir.join(&self.name);
-        let path_type = PathType::File {
-            path: path.clone(),
-            opt_template_file: self.template.clone(),
-        };
-        fn_create(&path_type);
-
-        path
-    }
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone)]
-struct ProjectFolder {
-    name: String,
-    folders: Option<Vec<ProjectFolder>>,
-    files: Option<Vec<ProjectFile>>,
-}
-
-impl ProjectFolder {
-    fn create_at<F>(&self, out_dir: &PathBuf, fn_create: &F) -> PathBuf
-    where
-        F: Fn(&PathType),
-    {
-        let path = out_dir.join(&self.name);
-        fn_create(&PathType::Folder { path: path.clone() });
-        fs::create_dir_all(&path).expect("Could not create directory {path}");
-        path
-    }
-
-    fn create_recursively_at<F>(&self, out_dir: &PathBuf, f: &F) -> PathBuf
-    where
-        F: Fn(&PathType),
-    {
-        let path = self.create_at(out_dir, f);
-
-        // folders
-        if let Some(folders) = &self.folders {
-            for sub_folder in folders.iter() {
-                sub_folder.create_recursively_at(&path, f);
-            }
-        };
-
-        // files
-        if let Some(files) = &self.files {
-            for file in files.iter() {
-                file.create_at(&path, f);
-            }
-        };
-
-        path
     }
 }
 
