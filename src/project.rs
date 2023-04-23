@@ -13,7 +13,7 @@ use tera::{Context, Tera};
 pub enum PathType {
     File {
         path: PathBuf,
-        opt_template_file: Option<String>,
+        template_file: Option<String>,
     },
     Folder {
         path: PathBuf,
@@ -53,9 +53,9 @@ impl Project {
         folder.create_recursively_at(&out_dir, &|path_type| match path_type {
             PathType::File {
                 path,
-                opt_template_file,
+                template_file,
             } => {
-                if let Some(template_file) = opt_template_file {
+                if let Some(template_file) = template_file {
                     let content = Self::template_file_content(template_file);
                     let rendered = Tera::one_off(content, &tera_context, true)
                         .expect("Cannot render file {template_file}");
@@ -71,6 +71,9 @@ impl Project {
         });
     }
 
+    /**
+     * Returns the new tera context of this [`Project`].
+     */
     fn new_tera_context(&self) -> Context {
         let domain_name = self.domain_name.clone();
         let target_name = self.target_name.clone();
@@ -98,11 +101,11 @@ impl Project {
     }
 
     fn parse_json_proj_struct(&self) -> folder::Folder {
-        let opt_file = PROJECT_TEMPLATES.get_file(PROJECT_STRUCTURE_TEMPLATE);
-        match opt_file {
+        let file = PROJECT_TEMPLATES.get_file(PROJECT_STRUCTURE_TEMPLATE);
+        match file {
             Some(file) => {
-                let opt_path_str = file.path().to_str();
-                if let Some(path_str) = opt_path_str {
+                let path_str = file.path().to_str();
+                if let Some(path_str) = path_str {
                     let template_content = Self::template_file_content(&path_str.to_string());
                     let rendered =
                         Tera::one_off(template_content, &self.new_tera_context(), true).unwrap();

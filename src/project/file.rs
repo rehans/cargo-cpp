@@ -18,7 +18,7 @@ impl File {
         let path = out_dir.join(&self.name);
         let path_type = PathType::File {
             path: path.clone(),
-            opt_template_file: self.template.clone(),
+            template_file: self.template.clone(),
         };
         fn_create(&path_type);
 
