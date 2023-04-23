@@ -1,8 +1,7 @@
 // Copyright(c) 2023 rehans.
 
-use super::file;
-use super::PathType;
-
+use crate::project::file;
+use crate::project::PathType;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 
