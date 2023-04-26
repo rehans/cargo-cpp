@@ -60,13 +60,21 @@ impl Project {
                     let rendered = Tera::one_off(content, &tera_context, true)
                         .expect("Cannot render file {template_file}");
 
-                    fs::write(&path, rendered).expect("Could not write file {path}!");
-                    info!("Created: {path:#?}");
+                    if !path.exists() {
+                        fs::write(&path, rendered).expect("Could not write file {path}!");
+                        info!("Created: {path:#?}");
+                    } else {
+                        info!("Exists: {path:#?}");
+                    }
                 }
             }
             PathType::Folder { path } => {
-                fs::create_dir_all(&path).expect("Could not create directory {path}");
-                info!("Created: {path:#?}");
+                if !path.exists() {
+                    fs::create_dir_all(&path).expect("Could not create directory {path}");
+                    info!("Created: {path:#?}");
+                } else {
+                    info!("Exists: {path:#?}");
+                }
             }
         });
     }
