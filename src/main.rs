@@ -2,7 +2,7 @@
 
 // This declaration will look for a file named `project.rs` and will
 // insert its contents inside a module named `project` under this scope
-mod project;
+mod cpp_new;
 
 use clap::{Parser, Subcommand};
 use log::info;
@@ -42,7 +42,7 @@ fn main() -> std::io::Result<()> {
             info!("Target: {target_name:#?}");
             info!("Output: {output_dir:#?}");
 
-            project::Project::new(domain_name, target_name, output_dir).gen();
+            cpp_new::Project::new(domain_name, target_name, output_dir).gen();
         }
     }
 

@@ -1,7 +1,7 @@
 // Copyright(c) 2023 rehans.
 
-use crate::project::file;
-use crate::project::PathType;
+use crate::cpp_new::file;
+use crate::cpp_new::PathType;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 
