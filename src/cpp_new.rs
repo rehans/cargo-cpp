@@ -10,7 +10,7 @@ use std::path::PathBuf;
 use std::{collections::HashMap, fs};
 use tera::{Context, Tera};
 
-pub enum PathType {
+pub enum PathKind {
     File {
         path: PathBuf,
         template_file: Option<String>,
@@ -51,7 +51,7 @@ impl NewOptions {
         let folder = self.parse_json_proj_struct();
 
         folder.create_recursively_at(&out_dir, &|path_type| match path_type {
-            PathType::File {
+            PathKind::File {
                 path,
                 template_file,
             } => {
@@ -68,7 +68,7 @@ impl NewOptions {
                     }
                 }
             }
-            PathType::Folder { path } => {
+            PathKind::Folder { path } => {
                 if !path.exists() {
                     fs::create_dir_all(&path).expect("Could not create directory {path}");
                     info!("Created: {path:#?}");

@@ -1,7 +1,7 @@
 // Copyright(c) 2023 rehans.
 
 use crate::cpp_new::file;
-use crate::cpp_new::PathType;
+use crate::cpp_new::PathKind;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 
@@ -15,17 +15,17 @@ pub struct Folder {
 impl Folder {
     fn create_at<F>(&self, out_dir: &PathBuf, fn_create: &F) -> PathBuf
     where
-        F: Fn(&PathType),
+        F: Fn(&PathKind),
     {
         let path = out_dir.join(&self.name);
-        fn_create(&PathType::Folder { path: path.clone() });
+        fn_create(&PathKind::Folder { path: path.clone() });
 
         path
     }
 
     pub fn create_recursively_at<F>(&self, out_dir: &PathBuf, f: &F) -> PathBuf
     where
-        F: Fn(&PathType),
+        F: Fn(&PathKind),
     {
         let path = self.create_at(out_dir, f);
 
