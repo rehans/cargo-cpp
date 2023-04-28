@@ -1,7 +1,7 @@
 // Copyright(c) 2023 rehans.
 
-// This declaration will look for a file named `project.rs` and will
-// insert its contents inside a module named `project` under this scope
+// This declaration will look for a file named `cpp_new.rs` and will
+// insert its contents inside a module named `cpp_new` under this scope
 mod cpp_new;
 
 use clap::{Parser, Subcommand};
