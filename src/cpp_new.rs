@@ -25,13 +25,13 @@ static PROJECT_TEMPLATES: Dir = include_dir!("$CARGO_MANIFEST_DIR/templates");
 static PROJECT_STRUCTURE_TEMPLATE: &str = "project_structure.json";
 
 #[derive(Debug, Clone)]
-pub struct Project {
+pub struct NewOptions {
     out_dir: Option<PathBuf>,
     domain_name: String,
     target_name: String,
 }
 
-impl Project {
+impl NewOptions {
     pub fn new(domain_name: String, target_name: String, out_dir: Option<PathBuf>) -> Self {
         Self {
             out_dir,
@@ -147,7 +147,7 @@ mod tests {
     #[test]
     fn test() {
         let out_dir = Some(PathBuf::from(std::env::current_dir().unwrap().clone()));
-        let proj_gen = Project::new("hao".to_string(), "mylib".to_string(), out_dir);
+        let proj_gen = NewOptions::new("hao".to_string(), "mylib".to_string(), out_dir);
         let proj_struct = proj_gen.parse_json_proj_struct();
         println!("{proj_struct:#?}");
 

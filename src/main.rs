@@ -42,7 +42,7 @@ fn main() -> std::io::Result<()> {
             info!("Target: {target_name:#?}");
             info!("Output: {output_dir:#?}");
 
-            cpp_new::Project::new(domain_name, target_name, output_dir).gen();
+            cpp_new::NewOptions::new(domain_name, target_name, output_dir).gen();
         }
     }
 
