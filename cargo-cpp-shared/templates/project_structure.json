@@ -12,16 +12,16 @@
     ],
     "folders": [
         {
-            "name": "include/{{ config.domain_name }}/{{ config.target_name }}",
+            "name": "{{ config.include_dir_name }}/{{ config.domain_name }}/{{ config.target_name }}",
             "files": [
                 {
                     "name": "{{ config.target_name }}.h",
-                    "template": "include/print.h.in"
+                    "template": "{{ config.include_dir_name }}/print.h.in"
                 }
             ]
         },
         {
-            "name": "source",
+            "name": "{{ config.source_dir_name }}",
             "files": [
                 {
                     "name": "{{ config.target_name }}.cpp",
@@ -34,7 +34,7 @@
             ]
         },
         {
-            "name": "test",
+            "name": "{{ config.test_dir_name }}",
             "files": [
                 {
                     "name": "{{ config.target_name }}_test.cpp.in"
@@ -42,7 +42,7 @@
             ]
         },
         {
-            "name": "external",
+            "name": "{{ config.external_dir_name }}",
             "files": [
                 {
                     "name": "CMakeLists.txt",

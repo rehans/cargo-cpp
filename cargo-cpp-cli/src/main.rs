@@ -1,6 +1,6 @@
 // Copyright(c) 2023 rehans.
 
-use cargo_cpp_shared::NewOptions;
+use cargo_cpp_shared::cpp_new::NewOptions;
 use clap::{Parser, Subcommand};
 use log::info;
 use std::path::PathBuf;
