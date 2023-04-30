@@ -1,23 +1,6 @@
-[package]
-name = "cargo-cpp"
-version = "0.1.0"
-authors = ["René Hansen <rene@hansen-audio.org>"]
-edition = "2018"
+[workspace]
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
-[dependencies]
-clap = { version = "4.1.8", features = ["derive"] }
-serde = { version = "1.0.159", features = ["derive"] }
-serde_json = "1.0.95"
-log = "0.4.17"
-env_logger = "0.10.0"
-tera = "1.18.1"
-include_dir = "0.7.3"
-chrono = "0.4.24"
-
-# See also https://github.com/johnthagen/min-sized-rust
-[profile.release]
-strip = true        # Automatically strip symbols from the binary.
-opt-level = "z"     # Optimize for size.
-lto = true          # Enable Link Time Optimization
+members = [
+    "cargo-cpp-shared",
+    "cargo-cpp-cli"
+]

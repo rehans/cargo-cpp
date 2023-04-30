@@ -1,9 +1,6 @@
 // Copyright(c) 2023 rehans.
 
-// This declaration will look for a file named `cpp_new.rs` and will
-// insert its contents inside a module named `cpp_new` under this scope
-mod cpp_new;
-
+use cargo_cpp_shared::NewOptions;
 use clap::{Parser, Subcommand};
 use log::info;
 use std::path::PathBuf;
@@ -42,7 +39,7 @@ fn main() -> std::io::Result<()> {
             info!("Target: {target_name:#?}");
             info!("Output: {output_dir:#?}");
 
-            cpp_new::NewOptions::new(domain_name, target_name, output_dir).gen();
+            NewOptions::new(domain_name, target_name, output_dir).gen();
         }
     }
 

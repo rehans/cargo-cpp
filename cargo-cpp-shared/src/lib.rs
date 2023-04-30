@@ -1,11 +1,9 @@
 // Copyright(c) 2023 rehans.
 
-mod file;
-mod folder;
-
 use chrono::Datelike;
 use include_dir::{include_dir, Dir};
 use log::info;
+use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 use std::{collections::HashMap, fs};
 use tera::{Context, Tera};
@@ -108,7 +106,7 @@ impl NewOptions {
             .expect(&format!("Cannot read utf8 string from {template_file}"))
     }
 
-    fn parse_json_proj_struct(&self) -> folder::Folder {
+    fn parse_json_proj_struct(&self) -> Folder {
         let file = PROJECT_TEMPLATES.get_file(PROJECT_STRUCTURE_TEMPLATE);
         match file {
             Some(file) => {
@@ -118,7 +116,7 @@ impl NewOptions {
                     let rendered =
                         Tera::one_off(template_content, &self.new_tera_context(), true).unwrap();
 
-                    let p: folder::Folder = serde_json::from_str(&rendered).unwrap();
+                    let p: Folder = serde_json::from_str(&rendered).unwrap();
                     p
                 } else {
                     todo!()
@@ -126,6 +124,70 @@ impl NewOptions {
             }
             None => todo!(),
         }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct Folder {
+    name: String,
+    folders: Option<Vec<Folder>>,
+    files: Option<Vec<File>>,
+}
+
+impl Folder {
+    fn create_at<F>(&self, out_dir: &PathBuf, fn_create: &F) -> PathBuf
+    where
+        F: Fn(&PathKind),
+    {
+        let path = out_dir.join(&self.name);
+        fn_create(&PathKind::Folder { path: path.clone() });
+
+        path
+    }
+
+    pub fn create_recursively_at<F>(&self, out_dir: &PathBuf, f: &F) -> PathBuf
+    where
+        F: Fn(&PathKind),
+    {
+        let path = self.create_at(out_dir, f);
+
+        // folders
+        if let Some(folders) = &self.folders {
+            for sub_folder in folders.iter() {
+                sub_folder.create_recursively_at(&path, f);
+            }
+        };
+
+        // files
+        if let Some(files) = &self.files {
+            files.iter().for_each(|file| {
+                file.create_at(&path, f);
+            });
+        };
+
+        path
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct File {
+    name: String,
+    template: Option<String>,
+}
+
+impl File {
+    pub fn create_at<F>(&self, out_dir: &PathBuf, fn_create: &F) -> PathBuf
+    where
+        F: Fn(&PathKind),
+    {
+        let path = out_dir.join(&self.name);
+        let path_type = PathKind::File {
+            path: path.clone(),
+            template_file: self.template.clone(),
+        };
+        fn_create(&path_type);
+
+        path
     }
 }
 
