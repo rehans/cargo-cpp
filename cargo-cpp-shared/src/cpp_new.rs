@@ -218,11 +218,11 @@ mod tests {
     #[test]
     fn test() {
         let out_dir = Some(PathBuf::from(std::env::current_dir().unwrap().clone()));
-        let proj_gen = NewOptions::new("hao".to_string(), "mylib".to_string(), out_dir);
-        let proj_struct = proj_gen.parse_json_proj_struct();
-        println!("{proj_struct:#?}");
+        let new_options = NewOptions::new("hao".to_string(), "mylib".to_string(), out_dir);
+        let proj_tree = new_options.parse_json_proj_struct();
+        println!("{proj_tree:#?}");
 
-        proj_gen.gen();
+        new_options.gen();
     }
 
     #[test]
