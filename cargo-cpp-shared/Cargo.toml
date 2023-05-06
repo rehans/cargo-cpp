@@ -14,9 +14,3 @@ env_logger = "0.10.0"
 tera = "1.18.1"
 include_dir = "0.7.3"
 chrono = "0.4.24"
-
-# See also https://github.com/johnthagen/min-sized-rust
-[profile.release]
-strip = true        # Automatically strip symbols from the binary.
-opt-level = "z"     # Optimize for size.
-lto = true          # Enable Link Time Optimization
