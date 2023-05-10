@@ -1,7 +1,7 @@
 // Copyright(c) 2023 rehans.
 
 use cargo_cpp_shared::cpp_new::NewOptions;
-use clap::{Parser, Subcommand};
+use clap::{ArgAction, Parser, Subcommand};
 use log::info;
 use std::path::PathBuf;
 
@@ -22,6 +22,8 @@ enum Commands {
         target_name: String,
         #[arg(short, long)]
         output_dir: Option<PathBuf>,
+        #[arg(short, long, action=ArgAction::SetTrue)]
+        folders_only: Option<bool>,
     },
 }
 
@@ -34,12 +36,15 @@ fn main() -> std::io::Result<()> {
             domain_name,
             target_name,
             output_dir,
+            folders_only,
         } => {
             info!("Domain: {domain_name:#?}");
             info!("Target: {target_name:#?}");
             info!("Output: {output_dir:#?}");
 
-            NewOptions::new(domain_name, target_name, output_dir).gen();
+            NewOptions::new(domain_name, target_name, output_dir)
+                .set_folders_only(folders_only.unwrap_or(false))
+                .gen();
         }
     }
 

@@ -29,6 +29,7 @@ pub struct NewOptions {
     out_dir: Option<PathBuf>,
     domain_name: String,
     target_name: String,
+    folders_only: bool,
 }
 
 impl NewOptions {
@@ -37,6 +38,7 @@ impl NewOptions {
             out_dir,
             domain_name: domain_name.conform(),
             target_name: target_name.conform(),
+            folders_only: false,
         }
     }
 
@@ -55,6 +57,10 @@ impl NewOptions {
                 path,
                 template_file,
             } => {
+                if self.folders_only {
+                    return;
+                }
+
                 if let Some(template_file) = template_file {
                     let content = Self::template_file_content(template_file);
                     let rendered = Tera::one_off(content, &tera_context, true)
@@ -77,6 +83,11 @@ impl NewOptions {
                 }
             }
         });
+    }
+
+    pub fn set_folders_only(&mut self, folders_only: bool) -> &mut Self {
+        self.folders_only = folders_only;
+        self
     }
 
     /**
